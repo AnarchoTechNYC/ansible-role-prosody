@@ -8,6 +8,10 @@ admins = {
 {% endfor %}
 {% endif %}
 } -- END admins
+{% if prosody_config.data_path is defined %}
+
+data_path = "{{ prosody_config.data_path }}"
+{% endif %}
 {% if prosody_config.plugin_paths is defined %}
 
 plugin_paths = {
@@ -104,9 +108,21 @@ pidfile = "{{ prosody_config.pidfile }}"
 
 authentication = "{{ prosody_config.authentication }}"
 {% endif %}
+{% if prosody_config.default_storage is defined %}
+
+default_storage = "{{ prosody_config.default_storage }}"
+{% endif %}
 {% if prosody_config.storage is defined %}
 
-storage = "{{ prosody_config.storage }}"
+storage = {% if prosody_config.storage is mapping %}{
+{% for store in prosody_config.storage %}{% for k, v in store.items() %}
+    {{ k }} = "{{ v }}";
+{% endfor %}{% endfor %}
+}{% else %}"{{ prosody_config.storage }}"{% endif %}
+{% endif %}
+{% if prosody_config.sql_manage_tables is defined %}
+
+sql_manage_tables = {{ prosody_config.sql_manage_tables | bool | lower }}
 {% endif %}
 {% if prosody_config.sql is defined %}
 
@@ -157,5 +173,7 @@ ignore_presence_priority = {{ prosody_config.ignore_presence_priority | bool | l
 
 certificates = "{{ prosody_config.certificates }}"
 {% endif %}
+{% if prosody_config.VirtualHosts is defined %}
 
 Include "/etc/prosody/virtualhosts-enabled/*.cfg.lua"
+{% endif %}

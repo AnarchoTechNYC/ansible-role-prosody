@@ -20,7 +20,9 @@ prosody_config:
 
   admins: []
 
+  #data_path: "{{ prosody_server_data_dir }}"
   #plugin_paths: []
+
 
   modules_enabled:
     - roster
@@ -67,13 +69,17 @@ prosody_config:
 
   authentication: internal_hashed
 
+  # See https://prosody.im/doc/storage
+  #default_storage: internal
   #storage: internal
+  #sql_manage_tables: true
   #sql:
     #driver: SQLite3
     #database: prosody.sqlite
     #username: prosody
     #password: secret
     #host: localhost
+
   archive_expires_after: "1w"
 
   # TODO: Implemet logging configuration.
