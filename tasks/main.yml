@@ -1,0 +1,70 @@
+---
+- name: Install Prosody dependencies.
+  include_tasks: "install-{{ ansible_os_family | default('Debian') | lower }}.yml"
+
+- name: Ensure Prosody VirtualHost configuration directories exist.
+  file:
+    path: "/etc/prosody/{{ item }}"
+    state: directory
+    owner: prosody
+    group: prosody
+    mode: "700"
+  loop:
+    - virtualhosts-available
+    - virtualhosts-enabled
+
+- name: Write Prosody configuration.
+  template:
+    src: prosody.cfg.lua.j2
+    dest: /etc/prosody/prosody.cfg.lua
+    owner: prosody
+    group: prosody
+    mode: "600"
+    # TODO: Fix validation.
+    #validate: "prosodyctl --config %s check config"
+  notify: Reload Prosody.
+
+- name: Write Prosody VirtualHost configuration.
+  when:
+    - prosody_config.VirtualHosts is defined
+    - item.state | default('present') == "present"
+  template:
+    src: prosody-virtualhost.cfg.lua.j2
+    dest: "/etc/prosody/virtualhosts-available/{{ item.domain }}.cfg.lua"
+    owner: prosody
+    group: prosody
+    mode: "600"
+    # TODO: Fix validation.
+    #validate: "prosodyctl --config %s check config"
+  loop: "{{ prosody_config.VirtualHosts }}"
+
+- name: Enable Prosody VirtualHost configuration.
+  when:
+    - prosody_config.VirtualHosts is defined
+    - item.enabled | default(true)
+  file:
+    path: "/etc/prosody/virtualhosts-enabled/{{ item.domain }}.cfg.lua"
+    state: link
+    src: "/etc/prosody/virtualhosts-available/{{ item.domain }}.cfg.lua"
+  loop: "{{ prosody_config.VirtualHosts }}"
+  notify: Reload Prosody.
+
+- name: Remove absent Prosody VirtualHost configuration.
+  when:
+    - prosody_config.VirtualHosts is defined
+    - item.0.state | default('present') == "absent"
+  file:
+    path: "/etc/prosody/{{ item.1 }}/{{ item.0.domain }}.cfg.lua"
+    state: absent
+  loop: "{{ prosody_config.VirtualHosts | product(paths) | list }}"
+  vars:
+    paths:
+      - "virtualhosts-available"
+      - "virtualhosts-enabled"
+  notify: Reload Prosody.
+
+- name: Set Prosody user accounts.
+  include_tasks: users.yml
+  loop: "{{ prosody_users }}"
+  vars:
+    account_file: "{{ prosody_server_data_dir }}/{{ item.jid.split('@') | last | replace('.', '%2e') }}/accounts/{{ item.jid.split('@') | first }}.dat"

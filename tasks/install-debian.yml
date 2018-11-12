@@ -1,0 +1,24 @@
+---
+- name: Install Prosody dependencies.
+  apt:
+    name: apt-transport-https
+
+- name: Add GPG key for Prosody package.
+  apt_key:
+    url: https://prosody.im/files/prosody-debian-packages.key
+    state: present
+
+- name: Add Prosody package repository.
+  apt_repository:
+    repo: "deb https://packages.prosody.im/debian {{ ansible_distribution_release | default('stretch') }} main"
+    state: present
+
+- name: Install Prosody.
+  apt:
+    update_cache: true
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - prosody
+      - python-pexpect # For interacting with `prosodyctl`.

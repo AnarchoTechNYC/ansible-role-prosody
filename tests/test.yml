@@ -1,0 +1,14 @@
+# This Ansible playbook runs test plays to ensure the role works.
+---
+- name: Test role.
+  hosts: localhost
+
+  pre_tasks:
+    - name: Install netcat.
+      package:
+        name: netcat
+        state: present
+
+  roles:
+    - ansible-role-prosody
+  

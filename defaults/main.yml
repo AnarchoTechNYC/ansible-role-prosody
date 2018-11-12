@@ -1,0 +1,112 @@
+---
+prosody_server_username: prosody
+prosody_server_data_dir: "/var/lib/{{ prosody_server_username }}"
+prosody_server_run_dir: "/var/run/{{ prosody_server_username }}"
+
+# Prosody configuration settings.
+prosody_config:
+
+  # Default TCP socket network interfaces to bind.
+  # See https://prosody.im/doc/ports#default_interfaces
+  #interfaces:
+  #  - "*"  # All IPv4 interfaces.
+  #  - "::" # All IPv6 interfaces.
+
+  # Default private interfaces to bind to.
+  # See https://prosody.im/doc/ports#default_interfaces
+  #local_interfaces:
+  #  - "127.0.0.1"
+  #  - "::1"
+
+  admins: []
+
+  #plugin_paths: []
+
+  modules_enabled:
+    - roster
+    - saslauth
+    - tls
+    - dialback
+    - disco
+    - carbons
+    - pep
+    - private
+    - blocklist
+    - vcard
+    - version
+    - uptime
+    - time
+    - ping
+    - register
+    - admin_adhoc
+
+  modules_disabled: []
+
+  allow_registration: false
+
+  # Client-to-server settings.
+  c2s_require_encryption: true
+  #c2s_ports:
+  #  - 5222
+  #c2s_interfaces:
+  #  - "*"
+  #  - "::"
+
+  # Server-to-server settings.
+  s2s_require_encryption: true
+  s2s_secure_auth: false
+  #s2s_insecure_domains: []
+  #s2s_secure_domains: []
+  #s2s_ports:
+  #  - 5269
+  #s2s_interfaces:
+  #  - "*"
+  #  - "::"
+
+  pidfile: "{{ prosody_server_run_dir }}/prosody.pid"
+
+  authentication: internal_hashed
+
+  #storage: internal
+  #sql:
+    #driver: SQLite3
+    #database: prosody.sqlite
+    #username: prosody
+    #password: secret
+    #host: localhost
+  archive_expires_after: "1w"
+
+  # TODO: Implemet logging configuration.
+  #log:
+  #  #debug: "/var/log/prosody/prosody.log"
+  #  info: "/var/log/prosody/prosody.log"
+  #  error: "/var/log/prosody/prosody.err"
+
+  #statistics: internal
+  #conflict_resolve: kick_old
+  #ignore_presence_priority: false
+
+  # Location of directory to find certificates in (relative to main config file)
+  certificates: certs
+
+  VirtualHosts:
+    - domain: localhost
+      #admins: []
+      #state: present
+      #enabled: true
+      #modules_enabled: []
+      #modules_disabled: []
+      #authentication: internal_plain
+      #certificate: /etc/prosody/certs/localhost.crt
+      #key: /etc/prosody/certs/localhost.key
+      # The password should be encrypted with Ansible Vault.
+      #password: "passphrase to decrypt TLS key file"
+
+# List of user accounts registered with the Prosody server.
+prosody_users: []
+#  - jid: admin@localhost
+#    password: password
+#    state: present
+#  - jid: test@localhost
+#    password: password
+#    state: absent

@@ -1,0 +1,14 @@
+---
+- name: Make Prosody user account.
+  when: item.state | default('present') == "present"
+  expect:
+    command: "prosodyctl adduser {{ item.jid | quote }}"
+    responses:
+      password: "{{ item.password }}"
+    creates: "{{ account_file }}"
+
+- name: Remove absent Prosody user account.
+  when: item.state | default('present') == "absent"
+  command: "prosodyctl deluser {{ item.jid | quote }}"
+  args:
+    removes: "{{ account_file }}"
