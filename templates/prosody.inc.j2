@@ -1,0 +1,186 @@
+{#
+    This is a template fragment (included file) for the Prosody
+    server's configuration. It handles writing Lua based on the
+    values of either the global section or a given VirtualHost.
+#}
+admins = {
+{% if cfg.admins is defined %}
+{% for jid in cfg.admins %}
+    "{{ jid }}";
+{% endfor %}
+{% endif %}
+} -- END admins
+{% if cfg.data_path is defined %}
+
+data_path = "{{ cfg.data_path }}"
+{% endif %}
+{% if cfg.plugin_paths is defined %}
+
+plugin_paths = {
+{% for path in cfg.plugin_paths %}
+    "{{ path }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.modules_enabled is defined %}
+
+modules_enabled = {
+{% for module in cfg.modules_enabled %}
+    "{{ module }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.modules_disabled is defined %}
+
+modules_disabled = {
+{% for module in cfg.modules_disabled %}
+    "{{ module }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.allow_registration is defined %}
+
+allow_registration = {{ cfg.allow_registration | bool | lower }}
+{% endif %}
+{% if cfg.c2s_require_encryption is defined %}
+
+c2s_require_encryption = {{ cfg.c2s_require_encryption | bool | lower }}
+{% endif %}
+{% if cfg.c2s_ports is defined %}
+
+c2s_ports = {
+{% for port in cfg.c2s_ports %}
+    {{ port }},
+{% endfor %}
+}
+{% endif %}
+{% if cfg.c2s_interfaces is defined %}
+
+c2s_interfaces = {
+{% for addr in cfg.c2s_interfaces %}
+    "{{ addr }}",
+{% endfor %}
+}
+{% endif %}
+{% if cfg.s2s_ports is defined %}
+
+s2s_ports = {
+{% for port in cfg.s2s_ports %}
+    {{ port }},
+{% endfor %}
+}
+{% endif %}
+{% if cfg.s2s_interfaces is defined %}
+
+s2s_interfaces = {
+{% for addr in cfg.s2s_interfaces %}
+    "{{ addr }}",
+{% endfor %}
+}
+{% endif %}
+{% if cfg.s2s_require_encryption is defined %}
+
+s2s_require_encryption = {{ cfg.s2s_require_encryption | bool | lower }}
+{% endif %}
+{% if cfg.s2s_secure_auth is defined %}
+
+s2s_secure_auth = {{ cfg.s2s_secure_auth | bool | lower }}
+{% endif %}
+{% if cfg.s2s_insecure_domains is defined %}
+
+s2s_insecure_domains = {
+{% for domain in cfg.s2s_insecure_domains %}
+    "{{ domain }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.s2s_secure_domains is defined %}
+
+s2s_secure_domains = {
+{% for domain in cfg.s2s_secure_domains %}
+    "{{ domain }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.pidfile is defined %}
+
+pidfile = "{{ cfg.pidfile }}"
+{% endif %}
+{% if cfg.authentication is defined %}
+
+authentication = "{{ cfg.authentication }}"
+{% endif %}
+{% if cfg.default_storage is defined %}
+
+default_storage = "{{ cfg.default_storage }}"
+{% endif %}
+{% if cfg.storage is defined %}
+
+storage = {% if cfg.storage is mapping %}{
+{% for store in cfg.storage %}{% for k, v in store.items() %}
+    {{ k }} = "{{ v }}";
+{% endfor %}{% endfor %}
+}{% else %}"{{ cfg.storage }}"{% endif %}
+{% endif %}
+{% if cfg.sql_manage_tables is defined %}
+
+sql_manage_tables = {{ cfg.sql_manage_tables | bool | lower }}
+{% endif %}
+{% if cfg.sql is defined %}
+
+sql = {
+    {% if cfg.sql.driver is defined %}
+    driver = "{{ cfg.sql.driver }}",
+    {% endif %}
+    {% if cfg.sql.database is defined %}
+    database = "{{ cfg.sql.database }}",
+    {% endif %}
+    {% if cfg.sql.username is defined %}
+    username = "{{ cfg.sql.username }}",
+    {% endif %}
+    {% if cfg.sql.password is defined %}
+    password = "{{ cfg.sql.password }}",
+    {% endif %}
+    {% if cfg.sql.host is defined %}
+    host = "{{ cfg.sql.host }}",
+    {% endif %}
+}
+{% endif %}
+{% if cfg.archive_expires_after is defined %}
+
+archive_expires_after = "{{ cfg.archive_expires_after }}"
+{% endif %}
+
+-- Logging configuration
+-- For advanced logging see https://prosody.im/doc/logging
+log = {
+	info = "/var/log/prosody/prosody.log"; -- Change 'info' to 'debug' for verbose logging
+	error = "/var/log/prosody/prosody.err";
+	-- "*syslog"; -- Uncomment this for logging to syslog
+	-- "*console"; -- Log to the console, useful for debugging with daemonize=false
+}
+{% if cfg.statistics is defined %}
+
+statistics = "{{ cfg.statistics }}"
+{% endif %}
+{% if cfg.conflict_resolve is defined %}
+
+conflict_resolve = "{{ cfg.conflict_resolve }}"
+{% endif %}
+{% if cfg.ignore_presence_priority is defined %}
+
+ignore_presence_priority = {{ cfg.ignore_presence_priority | bool | lower }}
+{% endif %}
+{% if cfg.certificates is defined %}
+
+certificates = "{{ cfg.certificates }}"
+{% endif %}
+{% if cfg.certificate is defined %}
+    certificate = "{{ cfg.certificate }}"
+{% endif %}
+{% if cfg.key is defined %}
+    key = "{{ cfg.key }}"
+{% endif %}
+{% if cfg.password is defined %}
+    password = "{{ cfg.password }}"
+{% endif %}

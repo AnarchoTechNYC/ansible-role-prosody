@@ -5,45 +5,4 @@ VirtualHost "{{ item.domain }}"
 {% if item.enabled is defined %}
     enabled = {{ item.enabled | bool | lower }}
 {% endif %}
-{% if item.admins is defined %}
-admins = {
-{% for jid in item.admins %}
-    "{{ jid }}";
-{% endfor %}
-}
-{% endif %}
-{% if item.allow_registration is defined %}
-    allow_registration = {{ item.allow_registration | bool | lower }}
-{% endif %}
-{% if item.modules_enabled is defined %}
-modules_enabled = {
-{% for module in item.modules_enabled %}
-    "{{ module }}";
-{% endfor %}
-}
-{% endif %}
-{% if item.modules_disabled is defined %}
-modules_disabled = {
-{% for module in item.modules_enabled %}
-    "{{ module }}";
-{% endfor %}
-}
-{% endif %}
-{% if item.authentication is defined %}
-authentication = {{ item.authentication }}
-{% endif %}
-{% if item.conflict_resolve is defined %}
-    conflict_resolve = "{{ item.conflict_resolve }}"
-{% endif %}
-{% if item.ignore_presence_priority is defined %}
-    ignore_presence_priority = "{{ item.ignore_presence_priority | bool | lower }}"
-{% endif %}
-{% if item.certificate is defined %}
-    certificate = "{{ item.certificate }}"
-{% endif %}
-{% if item.key is defined %}
-    key = "{{ item.key }}"
-{% endif %}
-{% if item.password is defined %}
-    password = "{{ item.password }}"
-{% endif %}
+{% with cfg=item %}{% include "prosody.inc.j2" %}{% endwith %}
