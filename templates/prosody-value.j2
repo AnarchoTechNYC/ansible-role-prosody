@@ -1,0 +1,26 @@
+{#
+    FIXME: Boolean values should be treated as booleans.
+           Not sure why we need to detect a string here.
+           Is `sameas` not testing appropriately?
+#}
+{% if v is sameas true or "true" == v %}
+true
+{% elif v is sameas false or "false" == v%}
+false
+{% elif v is string %}
+"{{ v }}"
+{% elif v is number %}
+{{ v }}
+{% elif v is mapping %}
+{
+{% for x, y in v.items() %}
+{% with v = y %}{% include "prosody-value.j2" %};{% endwith %}{{''}}
+{% endfor %}
+}
+{% elif v is sequence %}
+{
+{% for x in v %}
+{% with v = x %}{% include "prosody-value.j2" %};{% endwith %}{{''}}
+{% endfor %}
+}
+{% endif %}

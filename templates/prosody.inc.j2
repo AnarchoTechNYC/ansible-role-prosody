@@ -184,3 +184,29 @@ certificates = "{{ cfg.certificates }}"
 {% if cfg.password is defined %}
     password = "{{ cfg.password }}"
 {% endif %}
+{% if cfg.component_ports is defined %}
+
+component_ports = {
+{% for port in cfg.component_ports %}
+    {{ port | int }};
+{% endfor %}
+}
+{% endif %}
+{% if cfg.component_interface is defined %}
+
+component_interface = "{{ cfg.component_interface }}"
+{% endif %}
+{% if cfg.Components is defined %}
+
+{% for component in cfg.Components %}
+Component "{{ component.hostname | default('localhost') }}"{% if component.plugin is defined %} "{{ component.plugin }}"{% endif %}{{''}}
+{% if component.secret is defined %}
+    component_secret = "{{ component.secret }}"
+{% endif %}
+{% if component.options is defined %}
+{% for k, v in component.options.items() %}
+    {{ k }} = {% include "prosody-value.j2" %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}

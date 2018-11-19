@@ -10,7 +10,9 @@ To configure a Prosody server, several default variables are defined:
 * `prosody_server_data_dir`: Path to the directory in which Prosody will store user information. This defaults to `/var/lib/{{ prosody_server_username }}`, which is also the `prosody` user's default `$HOME` directory.
 * `prosody_server_run_dir`: Path to the server's runtime directory, which stores ephemeral files used while the server is running. This defaults to `/var/run/{{ prosody_server_username }}`.
 
-The bulk of Prosody's configuration is handled by a dictionary variable called `prosody_config`. It describes the state of the Prosody server configuration file. The dictionary's keys map almost one-to-one to the [variables in the Prosody server configuration file](https://prosody.im/doc/configure). An exception is the `VirtualHosts` key, which is a list of dictionaries each [describing a Prosody `VirtualHost` to configure](#configuring-prosody-virtualhosts).
+The bulk of Prosody's configuration is handled by a dictionary variable called `prosody_config`. It describes the state of the Prosody server configuration file. The dictionary's keys map almost one-to-one to the [variables in the Prosody server configuration file](https://prosody.im/doc/configure).
+
+An exception is the `VirtualHosts` key, which is a list of dictionaries each [describing a Prosody `VirtualHost` to configure](#configuring-prosody-virtualhosts). Another exception is the `Components` key, which is a list of dictionaries describing a given [Prosody Component](https://prosody.im/doc/components). Components must have a `hostname` key, and one of either `plugin` (for internal components) or `secret` (for external components). They may optionally also contain an `options` list, which is a dictionary of component options and their values.
 
 It may be helpful to see a few examples.
 
@@ -87,6 +89,16 @@ It may be helpful to see a few examples.
         password: your_password
     ```
     The above will store user accounts and passwords, as well as user contact lists (rosters) in the MySQL database on the localhost, but other data, such as user's own profile information (vCards), will use the default `internal` (filesystem-based) storage backend.
+1. Simple [multi-user chat (MUC)](https://prosody.im/doc/chatrooms) server with a few non-default options configured:
+    ```yml
+    prosody_config:
+      Components:
+        - hostname: "conference.example.com"
+          plugin: "muc"
+          options:
+            - max_history_messages: 5
+              muc_room_default_language: "es"
+    ```
 
 ### Configuring Prosody VirtualHosts
 
