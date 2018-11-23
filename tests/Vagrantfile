@@ -1,0 +1,54 @@
+Vagrant.configure("2") do |config|
+  provisioning_script = <<-SHELL
+    apt update
+    apt install --yes python python-pip mcabber
+    pip install --upgrade pip
+  SHELL
+  prosody_script = <<-SHELL
+    wget -O /usr/lib/prosody/modules/mod_s2soutinjection.lua \
+      https://hg.prosody.im/prosody-modules/raw-file/tip/mod_s2soutinjection/mod_s2soutinjection.lua
+    echo 'set tls = 1' >> ~vagrant/.mcabberrc
+    echo 'set password = "password"' >> ~vagrant/.mcabberrc
+  SHELL
+  config.vm.post_up_message = "After both machines have booted, run 'vagrant provision --provision-with=tls' to configure TLS trust relationships."
+  config.vm.define "s1" do |s|
+    s.vm.box = "ubuntu/xenial64"
+    s.vm.hostname = "s1.invalid"
+    s.vm.network "private_network", ip: "10.10.10.10"
+    s.vm.provision "shell", inline: provisioning_script
+    s.vm.provision "ansible" do |a|
+      a.playbook = "test.yml"
+    end
+    s.vm.provision "shell", inline: prosody_script
+    s.vm.provision "shell", inline: <<-SHELL
+      echo 10.10.10.11\t\ts2.invalid >> /etc/hosts
+      sed -i '/modules_disabled/i s2s_connect_overrides = { ["s2.invalid"] = "10.10.10.11"; }' /etc/prosody/prosody.cfg.lua
+      echo "set jid = userA@s1.invalid" >> ~vagrant/.mcabberrc
+      rm -f /etc/prosody/virtualhosts-enabled/s2.invalid.cfg.lua
+      prosodyctl restart
+    SHELL
+    s.vm.provision "tls", run: "never", type: "ansible" do |a|
+      a.playbook = "tls-finalize.yml"
+    end
+  end
+  config.vm.define "s2" do |s|
+    s.vm.box = "ubuntu/xenial64"
+    s.vm.hostname = "s2.invalid"
+    s.vm.network "private_network", ip: "10.10.10.11"
+    s.vm.provision "shell", inline: provisioning_script
+    s.vm.provision "ansible" do |a|
+      a.playbook = "test.yml"
+    end
+    s.vm.provision "shell", inline: prosody_script
+    s.vm.provision "shell", inline: <<-SHELL
+      echo 10.10.10.10\t\ts1.invalid >> /etc/hosts
+      sed -i '/modules_disabled/i s2s_connect_overrides = { ["s1.invalid"] = "10.10.10.10"; }' /etc/prosody/prosody.cfg.lua
+      echo "set jid = userB@s2.invalid" >> ~vagrant/.mcabberrc
+      rm -f /etc/prosody/virtualhosts-enabled/s1.invalid.cfg.lua
+      prosodyctl restart
+    SHELL
+    s.vm.provision "tls", run: "never", type: "ansible" do |a|
+      a.playbook = "tls-finalize.yml"
+    end
+  end
+end

@@ -1,0 +1,31 @@
+---
+- name: Finalize TLS setup.
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Set up trusted cert for s1.
+      when: ansible_nodename == 's1'
+      block:
+        - name: Copy s2 TLS cert to root cert store of s1.
+          copy:
+            src: "/tmp/prosody-tests/s2.invalid.crt"
+            dest: "/usr/local/share/ca-certificates/s2.invalid.crt"
+          ignore_errors: true
+
+    - name: Set up trusted cert for s2.
+      when: ansible_nodename == 's2'
+      block:
+        - name: Copy s1 TLS cert to root cert store of s2.
+          copy:
+            src: "/tmp/prosody-tests/s1.invalid.crt"
+            dest: "/usr/local/share/ca-certificates/s1.invalid.crt"
+          ignore_errors: true
+
+    - name: Add Prosody TLS certificate to root trust store.
+      command: dpkg-reconfigure -f noninteractive ca-certificates
+
+    - name: Restart Prosody.
+      service:
+        name: prosody
+        state: restarted

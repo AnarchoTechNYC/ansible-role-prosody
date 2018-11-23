@@ -1,7 +1,11 @@
 # This Ansible playbook runs test plays to ensure the role works.
 ---
 - name: Test role.
-  hosts: localhost
+  hosts: all
+  become: true
+
+  vars_files:
+    - vars.yml
 
   pre_tasks:
     - name: Install netcat.
@@ -12,3 +16,10 @@
   roles:
     - ansible-role-prosody
   
+  tasks:
+    - name: Configure Prosody TLS certificate.
+      when: ansible_nodename | replace('.invalid', '') == item | replace('.invalid', '')
+      include_tasks: prosody-tls.yml
+      loop:
+        - s1.invalid
+        - s2.invalid

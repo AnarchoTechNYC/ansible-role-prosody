@@ -1,0 +1,22 @@
+---
+- name: Create self-signed TLS certificate.
+  expect:
+    command: "prosodyctl cert generate {{ item }}"
+    responses:
+      'replace it?': "y"
+      ':': "\r"
+
+- name: Import Prosody TLS certificates.
+  command: "mv /var/lib/prosody/{{ item }}.crt /var/lib/prosody/{{ item }}.key /etc/prosody/certs/"
+
+- name: Add Prosody TLS cert to root store.
+  file:
+    path: "/usr/local/share/ca-certificates/{{ item }}.crt"
+    src: "/etc/prosody/certs/{{ item }}.crt"
+    state: link
+
+- name: Fetch TLS cert.
+  fetch:
+    src: "/etc/prosody/certs/{{ item }}.crt"
+    dest: "/tmp/prosody-tests/"
+    flat: true

@@ -1,0 +1,43 @@
+---
+prosody_users:
+  - jid: 'userA@s1.invalid'
+    password: 'password'
+  - jid: 'userB@s2.invalid'
+    password: 'password'
+
+prosody_server_username: prosody
+prosody_server_data_dir: "/var/lib/{{ prosody_server_username }}"
+prosody_server_run_dir: "/var/run/{{ prosody_server_username }}"
+prosody_config:
+  admins: []
+  modules_enabled:
+    - roster
+    - saslauth
+    - tls
+    - dialback
+    - disco
+    - carbons
+    - pep
+    - private
+    - blocklist
+    - vcard
+    - version
+    - uptime
+    - time
+    - ping
+    - register
+    - admin_adhoc
+    - s2soutinjection
+  modules_disabled: []
+  allow_registration: false
+  c2s_require_encryption: true
+  s2s_require_encryption: true
+  s2s_secure_auth: false
+  pidfile: "{{ prosody_server_run_dir }}/prosody.pid"
+  authentication: internal_hashed
+  archive_expires_after: "1w"
+  certificates: certs
+
+  VirtualHosts:
+    - domain: s1.invalid
+    - domain: s2.invalid
