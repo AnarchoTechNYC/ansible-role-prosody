@@ -15,6 +15,7 @@
 
   roles:
     - ansible-role-prosody
+    - tor
   
   tasks:
     - name: Configure Prosody TLS certificate.

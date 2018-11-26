@@ -28,6 +28,7 @@ prosody_config:
     - register
     - admin_adhoc
     - s2soutinjection
+    - onions
   modules_disabled: []
   allow_registration: false
   c2s_require_encryption: true
@@ -41,3 +42,12 @@ prosody_config:
   VirtualHosts:
     - domain: s1.invalid
     - domain: s2.invalid
+
+onion_services:
+  - name: onion-chat
+    virtports:
+      - port_number: 5269
+      - port_number: 5222
+    auth_type: stealth
+    clients:
+      - prosody

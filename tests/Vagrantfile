@@ -7,6 +7,8 @@ Vagrant.configure("2") do |config|
   prosody_script = <<-SHELL
     wget -O /usr/lib/prosody/modules/mod_s2soutinjection.lua \
       https://hg.prosody.im/prosody-modules/raw-file/tip/mod_s2soutinjection/mod_s2soutinjection.lua
+    wget -O /usr/lib/prosody/modules/mod_onions.lua \
+      https://hg.prosody.im/prosody-modules/raw-file/tip/mod_onions/mod_onions.lua
     echo 'set tls = 1' >> ~vagrant/.mcabberrc
     echo 'set password = "password"' >> ~vagrant/.mcabberrc
   SHELL
