@@ -65,6 +65,7 @@
 
 - name: Set Prosody user accounts.
   include_tasks: users.yml
+  no_log: true
   loop: "{{ prosody_users }}"
   vars:
     account_file: "{{ prosody_server_data_dir }}/{{ item.jid.split('@') | last | replace('.', '%2e') }}/accounts/{{ item.jid.split('@') | first }}.dat"
