@@ -194,15 +194,17 @@ sql = {
 
 archive_expires_after = "{{ cfg.archive_expires_after }}"
 {% endif %}
+{% if cfg.log is defined %}
 
--- Logging configuration
--- For advanced logging see https://prosody.im/doc/logging
-log = {
-	info = "/var/log/prosody/prosody.log"; -- Change 'info' to 'debug' for verbose logging
-	error = "/var/log/prosody/prosody.err";
-	-- "*syslog"; -- Uncomment this for logging to syslog
-	-- "*console"; -- Log to the console, useful for debugging with daemonize=false
+{# TODO: Templatize advanced logging rules: https://prosody.im/doc/advanced_logging #}
+log = {% if cfg.log is string %}"{{ cfg.log }}"{% elif cfg.log is mapping %}{
+    {% if cfg.log.debug is defined %}debug = "{{ cfg.log.debug }}";{% endif %}{{''}}
+    {% if cfg.log.info is defined %}info = "{{ cfg.log.info }}";{% endif %}{{''}}
+    {% if cfg.log.warn is defined %}warn = "{{ cfg.log.warn }}";{% endif %}{{''}}
+    {% if cfg.log.error is defined %}error = "{{ cfg.log.error }}";{% endif %}{{''}}
 }
+{% endif %}
+{% endif %}
 {% if cfg.statistics is defined %}
 
 statistics = "{{ cfg.statistics }}"

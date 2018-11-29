@@ -4,6 +4,13 @@
   hosts: localhost
 
   pre_tasks:
+    - name: Update APT cache (Debian).
+      when: ansible_os_family == "Debian"
+      apt:
+        update_cache: true
+      # FIXME: This is here due to a bug in Ansible: https://github.com/ansible/ansible/issues/27798
+      changed_when: false
+
     - name: Install netcat.
       package:
         name: netcat

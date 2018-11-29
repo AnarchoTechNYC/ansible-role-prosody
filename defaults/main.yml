@@ -81,11 +81,9 @@ prosody_config:
 
   archive_expires_after: "1w"
 
-  # TODO: Implemet logging configuration.
-  #log:
-  #  #debug: "/var/log/prosody/prosody.log"
-  #  info: "/var/log/prosody/prosody.log"
-  #  error: "/var/log/prosody/prosody.err"
+  log:
+    info: "/var/log/prosody/prosody.log"
+    error: "/var/log/prosody/prosody.err"
 
   #statistics: internal
   #conflict_resolve: kick_old

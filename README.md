@@ -96,8 +96,9 @@ It may be helpful to see a few examples.
         - hostname: "conference.example.com"
           plugin: "muc"
           options:
-            - max_history_messages: 5
-              muc_room_default_language: "es"
+            max_history_messages: 5
+            muc_room_default_language: "es"
+            restrict_room_creation: local
     ```
 
 ### Configuring Prosody VirtualHosts

@@ -20,7 +20,6 @@ matrix:
     - env: docker_repo=resin/rpi-raspbian
     - env: docker_repo=geerlingguy/docker-centos7-ansible
     - env: docker_repo=geerlingguy/docker-fedora27-ansible
-    - env: docker_repo=geerlingguy/docker-ubuntu1604-ansible
 
 install:
   - docker image pull ${docker_repo}
