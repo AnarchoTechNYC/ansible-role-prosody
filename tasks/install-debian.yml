@@ -22,3 +22,11 @@
     packages:
       - prosody
       - python-pexpect # For interacting with `prosodyctl`.
+
+- name: Ensure Prosody TLS key is readable.
+  file:
+    path: /etc/prosody/certs/localhost.key
+    owner: "{{ prosody_server_username }}"
+    group: "{{ prosody_server_username }}"
+    mode: "400"
+  notify: Restart Prosody.

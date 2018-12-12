@@ -3,6 +3,16 @@ prosody_server_username: prosody
 prosody_server_data_dir: "/var/lib/{{ prosody_server_username }}"
 prosody_server_run_dir: "/var/run/{{ prosody_server_username }}"
 
+# Base HTTP URL of the Prosody plugins (modules) repository from which
+# to download new modules.
+prosody_plugins_src_base_url: https://hg.prosody.im/prosody-modules/raw-file/
+
+# List of community Prosody plugins to install.
+prosody_plugins:
+  - name: conversejs # Name of the plugin to install.
+    state: present   # Whether the plugin should be installed or not.
+    version: tip     # Branch or commit of the version to install.
+
 # Prosody configuration settings.
 prosody_config:
 

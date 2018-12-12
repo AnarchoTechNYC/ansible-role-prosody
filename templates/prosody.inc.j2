@@ -230,6 +230,134 @@ certificates = "{{ cfg.certificates }}"
 {% if cfg.password is defined %}
     password = "{{ cfg.password }}"
 {% endif %}
+{% if cfg.http_default_host is defined %}
+
+http_default_host = "{{ cfg.http_default_host }}"
+{% endif %}
+{% if cfg.http_ports is defined %}
+
+http_ports = {
+{% for port in cfg.http_ports %}
+    {{ port | int }};
+{% endfor %}
+}
+{% endif %}
+{% if cfg.http_interfaces is defined %}
+
+http_interfaces = {
+{% for interface in cfg.http_interfaces %}
+    {{ interface }};
+{% endfor %}
+}
+{% endif %}
+{% if cfg.https_ports is defined %}
+
+https_ports = {
+{% for port in cfg.https_ports %}
+    {{ port | int }};
+{% endfor %}
+}
+{% endif %}
+{% if cfg.https_interfaces is defined %}
+
+https_interfaces = {
+{% for interface in cfg.https_interfaces %}
+    {{ interface }};
+{% endfor %}
+}
+{% endif %}
+{% if cfg.https_certificate is defined %}
+
+https_certificate = {% if cfg.https_certificate is string %}"{{ cfg.https_certificate }}"{% elif cfg.https_certificate is mapping %}
+{
+{% for port, path in cfg.https_certificate.items() %}
+    [{{ port | int }}] = "{{ path }}";
+{% endfor %}
+}
+{% endif %}
+{% endif %}
+{% if cfg.https_ssl is defined %}
+
+https_ssl = {
+{% if cfg.https_ssl.certificate is defined %}
+    certificate = "{{ cfg.https_ssl.certificate }}";
+{% endif %}
+{% if cfg.https_ssl.key is defined %}
+    key = "{{ cfg.https_ssl.key }}";
+{% endif %}
+}
+{% endif %}
+{% if cfg.http_paths is defined %}
+
+http_paths = {
+{% for k, path in cfg.http_paths.items() %}
+    {{ k }} = "{{ path }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.http_external_url is defined %}
+
+http_external_url = "{{ cfg.http_external_url }}"
+{% endif %}
+{% if cfg.cross_domain_bosh is defined %}
+
+cross_domain_bosh = {{ cfg.cross_domain_bosh | bool | lower }}
+{% endif %}
+{% if cfg.consider_bosh_secure is defined %}
+
+consider_bosh_secure = {{ cfg.consider_bosh_secure | bool | lower }}
+{% endif %}
+{% if cfg.bosh_max_inactivity is defined %}
+
+bosh_max_inactivity = {{ cfg.bosh_max_inactivity | int }}
+{% endif %}
+{% if cfg.bosh_default_hold is defined %}
+
+bosh_default_hold = {{ cfg.bosh_default_hold | int }}
+{% endif %}
+{% if cfg.bosh_max_requests is defined %}
+
+bosh_max_requests = {{ cfg.bosh_max_requests | int }}
+{% endif %}
+{% if cfg.trusted_proxies is defined %}
+trusted_proxies = {
+{% for proxy in cfg.trusted_proxies %}
+    "{{ proxy }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.conversejs_options is defined %}
+
+conversejs_options = {
+{% for k, v in cfg.conversejs_options.items() %}
+    {{ k }} = "{{ v }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.conversejs_cdn is defined %}
+
+conversejs_cdn = "{{ cfg.conversejs_cdn }}"
+{% endif %}
+{% if cfg.conversejs_version is defined %}
+
+conversejs_version = "{{ cfg.conversejs_version }}"
+{% endif %}
+{% if cfg.conversejs_script is defined %}
+
+conversejs_script = "{{ cfg.conversejs_script }}"
+{% endif %}
+{% if cfg.conversejs_css is defined %}
+
+conversejs_css = "{{ cfg.conversejs_css }}"
+{% endif %}
+{% if cfg.conversejs_tags is defined %}
+
+conversejs_tags = {
+{% for element in cfg.conversejs_tags %}
+    [[{{ element }}]];
+{% endfor %}
+}
+{% endif %}
 {% if cfg.component_ports is defined %}
 
 component_ports = {

@@ -6,23 +6,55 @@
   file:
     path: "/etc/prosody/{{ item }}"
     state: directory
-    owner: prosody
-    group: prosody
+    owner: "{{ prosody_server_username }}"
+    group: "{{ prosody_server_username }}"
     mode: "700"
   loop:
     - virtualhosts-available
     - virtualhosts-enabled
 
+- name: Ensure Prosody plugin directories exist.
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ prosody_server_username }}"
+    group: "{{ prosody_server_username }}"
+    mode: "500"
+  loop: "{{ prosody_config.plugin_paths | default([]) }}"
+
+- name: Install Prosody plugin.
+  when:
+    - prosody_config.plugin_paths is defined
+    - item.state | default('present') == "present"
+  get_url:
+    url: "{{ prosody_plugins_src_base_url }}{{ item.version | default('tip') }}/mod_{{ item.name }}/mod_{{ item.name }}.lua"
+    # FIXME: Which plugin path? Just the first one, for now.
+    dest: "{{ prosody_config.plugin_paths[0] }}/mod_{{ item.name }}.lua"
+    owner: "{{ prosody_server_username }}"
+    group: "{{ prosody_server_username }}"
+    mode: "400"
+  loop: "{{ prosody_plugins }}"
+
+- name: Remove Prosody plugin.
+  when:
+    - prosody_config.plugin_paths is defined
+    - item.state | default('present') == "absent"
+  file:
+    # FIXME: Which plugin path? Just the first one, for now.
+    path: "{{ prosody_config.plugin_paths[0] }}/mod_{{ item.name }}.lua"
+    state: "{{ item.state | default('absent') }}"
+  loop: "{{ prosody_plugins }}"
+
 - name: Write Prosody configuration.
   template:
     src: prosody.cfg.lua.j2
     dest: /etc/prosody/prosody.cfg.lua
-    owner: prosody
-    group: prosody
+    owner: "{{ prosody_server_username }}"
+    group: "{{ prosody_server_username }}"
     mode: "600"
     # TODO: Fix validation.
     #validate: "prosodyctl --config %s check config"
-  notify: Reload Prosody.
+  notify: Restart Prosody.
 
 - name: Write Prosody VirtualHost configuration.
   when:
@@ -31,12 +63,13 @@
   template:
     src: prosody-virtualhost.cfg.lua.j2
     dest: "/etc/prosody/virtualhosts-available/{{ item.domain }}.cfg.lua"
-    owner: prosody
-    group: prosody
+    owner: "{{ prosody_server_username }}"
+    group: "{{ prosody_server_username }}"
     mode: "600"
     # TODO: Fix validation.
     #validate: "prosodyctl --config %s check config"
   loop: "{{ prosody_config.VirtualHosts }}"
+  notify: Restart Prosody.
 
 - name: Enable Prosody VirtualHost configuration.
   when:
@@ -47,7 +80,7 @@
     state: link
     src: "/etc/prosody/virtualhosts-available/{{ item.domain }}.cfg.lua"
   loop: "{{ prosody_config.VirtualHosts }}"
-  notify: Reload Prosody.
+  notify: Restart Prosody.
 
 - name: Remove absent Prosody VirtualHost configuration.
   when:
@@ -61,7 +94,7 @@
     paths:
       - "virtualhosts-available"
       - "virtualhosts-enabled"
-  notify: Reload Prosody.
+  notify: Restart Prosody.
 
 - name: Set Prosody user accounts.
   include_tasks: users.yml

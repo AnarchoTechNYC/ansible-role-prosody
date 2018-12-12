@@ -9,6 +9,11 @@ To configure a Prosody server, several default variables are defined:
 * `prosody_server_username`: The OS-level user account name under which Prosody will run. This defaults to `prosody`. Don't change this if you are installing Prosody from the project's `deb` file, as this is the name of the account that is packaged with the Prosody distribution.
 * `prosody_server_data_dir`: Path to the directory in which Prosody will store user information. This defaults to `/var/lib/{{ prosody_server_username }}`, which is also the `prosody` user's default `$HOME` directory.
 * `prosody_server_run_dir`: Path to the server's runtime directory, which stores ephemeral files used while the server is running. This defaults to `/var/run/{{ prosody_server_username }}`.
+* `prosody_plugins_src_base_url`: Base HTTP URL of the Prosody plugins (modules) repository from which to download new modules.
+* `prosody_plugins`: List of community Prosody plugins to install. To have any effect, you must also set the `prosody_config.plugins_path` variable, described below. Each item in this list is a dictionary with the following structure:
+    * `name`: Name of the plugin to download and install.
+    * `state`: Whether the plugin should be installed (`present`, the default), or uninstalled (`absent`).
+    * `version`: Branch or commit of the version of the community plugin to download and install.
 
 The bulk of Prosody's configuration is handled by a dictionary variable called `prosody_config`. It describes the state of the Prosody server configuration file. The dictionary's keys map almost one-to-one to the [variables in the Prosody server configuration file](https://prosody.im/doc/configure).
 
@@ -52,54 +57,98 @@ It may be helpful to see a few examples.
     This is equivalent to the Prosody 0.10 configuration file that ships with the project. If the above settings are what you desire, you need not include a `prosody_config` dictionary at all.
 1. Prosody server responsible for two domains (`localhost` and `open-registration.local`), the latter of which allows in-band XMPP account registration while the former does not:
     ```yml
-    prosody_config:
-      admins:
-        - admin@localhost
-      allow_registration: false
-      VirtualHosts:
-        - domain: localhost
-        - domain: open-registration.local
-          allow_registration: true
+    admins:
+      - admin@localhost
+    allow_registration: false
+    VirtualHosts:
+      - domain: localhost
+      - domain: open-registration.local
+        allow_registration: true
     ```
 1. Prosody server with [SQL-backed data store](https://prosody.im/doc/modules/mod_storage_sql) on PostgreSQL:
     ```yml
-    prosody_config:
-      storage: "sql"
-      sql:
-        driver: "PostgreSQL"
-        database: "prosody_db"
-        host: "localhost"
-        port: 3306
-        username: prosody
-        password: your_password
+    storage: sql
+    sql:
+      driver: PostgreSQL
+      database: prosody_db
+      host: localhost
+      port: 3306
+      username: prosody
+      password: your_password
     ```
 1. Prosody server with [certain user data pieces split across multiple storage backends](https://prosody.im/doc/storage):
     ```yml
-    prosody_config:
-      default_storage: internal
-      storage:
-        accounts: sql
-        roster: sql
-      sql:
-        driver: "MySQL"
-        database: "prosody_db"
-        host: "localhost"
-        port: 3306
-        username: prosody
-        password: your_password
+    default_storage: internal
+    storage:
+      accounts: sql
+      roster: sql
+    sql:
+      driver: MySQL
+      database: prosody_db
+      host: localhost
+      port: 3306
+      username: prosody
+      password: your_password
     ```
     The above will store user accounts and passwords, as well as user contact lists (rosters) in the MySQL database on the localhost, but other data, such as user's own profile information (vCards), will use the default `internal` (filesystem-based) storage backend.
 1. Simple [multi-user chat (MUC)](https://prosody.im/doc/chatrooms) server with a few non-default options configured:
     ```yml
-    prosody_config:
-      Components:
-        - hostname: "conference.example.com"
-          plugin: "muc"
-          options:
-            max_history_messages: 5
-            muc_room_default_language: "es"
-            restrict_room_creation: local
+    Components:
+      - hostname: conference.example.com
+        plugin: muc
+        options:
+          max_history_messages: 5
+          muc_room_default_language: es
+          restrict_room_creation: local
     ```
+1. Simple MUC-enabled server using the [ConverseJS Web-based chat front-end](https://conversejs.org/) served via both HTTP and HTTPS on their alternate ports (`8080` and `8443`), using the server root as the ConverseJS endpoint, with in-band user registration enabled:
+    ```yml
+    prosody_plugins_src_base_url: https://hg.prosody.im/prosody-modules/raw-file/
+    prosody_plugins:
+      - name: conversejs
+        version: tip
+    prosody_config:
+      plugins_paths:
+        - /usr/local/lib/prosody/modules
+      modules_enabled:
+        - saslauth
+        - tls
+        - disco
+        - register
+        - pep
+        - roster
+        - carbons
+        - vcard # Optional, but needed for ConverseJS avatar support.
+      allow_registration: true
+      pidfile: "{{ prosody_server_run_dir }}/prosody.pid"
+      authentication: internal_hashed
+      http_ports:
+        - 8080
+      https_ports:
+        - 8443
+      VirtualHosts:
+        - domain: example.com
+          modules_enabled:
+            - conversejs
+          http_paths:
+            conversejs: "/"
+          conversejs_options:
+            view_mode: fullscreen
+          conversejs_tags:
+            # This script provides Signal Protocol support (needed for OMEMO).
+            - '<script src="https://cdn.conversejs.org/3rdparty/libsignal-protocol.min.js"></script>'
+          Components:
+            - hostname: conference.example.com
+              plugin: muc
+              options:
+                restrict_room_creation: local
+    prosody_users:
+      - jid: alice@example.com
+        password: password
+      - jid: bob@example.com
+        password: password
+    ```
+    The above configuration will ensure that `alice@example.com` can log in via the ConverseJS Web front-end at `http://example.com:8080/` with their initial account password of `password`, as well as providing a registration link for new users.
 
 ### Configuring Prosody VirtualHosts
 

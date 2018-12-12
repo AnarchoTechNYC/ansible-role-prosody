@@ -5,4 +5,7 @@ VirtualHost "{{ item.domain }}"
 {% if item.enabled is defined %}
     enabled = {{ item.enabled | bool | lower }}
 {% endif %}
+{% if item.http_host is defined %}
+    http_host = "{{ item.http_host }}"
+{% endif %}
 {% with cfg=item %}{% include "prosody.inc.j2" %}{% endwith %}
