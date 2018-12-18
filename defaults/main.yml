@@ -8,10 +8,12 @@ prosody_server_run_dir: "/var/run/{{ prosody_server_username }}"
 prosody_plugins_src_base_url: https://hg.prosody.im/prosody-modules/raw-file/
 
 # List of community Prosody plugins to install.
-prosody_plugins:
-  - name: conversejs # Name of the plugin to install.
-    state: present   # Whether the plugin should be installed or not.
-    version: tip     # Branch or commit of the version to install.
+#prosody_plugins:
+#  - name: conversejs      # Name of the plugin to install.
+#    state: present        # Whether the plugin should be installed or not.
+#    version: 2681f74750b2 # Branch or commit of the version to install.
+#    # If set, hash of the downloaded module file to compare against.
+#    checksum: sha1:6d84b4f4d5108bce25fa9103157ddfc519362460
 
 # Prosody configuration settings.
 prosody_config:

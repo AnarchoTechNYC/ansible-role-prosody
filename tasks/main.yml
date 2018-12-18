@@ -14,22 +14,25 @@
     - virtualhosts-enabled
 
 - name: Ensure Prosody plugin directories exist.
+  when: prosody_config.plugin_paths is defined
   file:
     path: "{{ item }}"
     state: directory
     owner: "{{ prosody_server_username }}"
     group: "{{ prosody_server_username }}"
     mode: "500"
-  loop: "{{ prosody_config.plugin_paths | default([]) }}"
+  loop: "{{ prosody_config.plugin_paths }}"
 
 - name: Install Prosody plugin.
   when:
     - prosody_config.plugin_paths is defined
+    - prosody_plugins is defined
     - item.state | default('present') == "present"
   get_url:
     url: "{{ prosody_plugins_src_base_url }}{{ item.version | default('tip') }}/mod_{{ item.name }}/mod_{{ item.name }}.lua"
     # FIXME: Which plugin path? Just the first one, for now.
     dest: "{{ prosody_config.plugin_paths[0] }}/mod_{{ item.name }}.lua"
+    checksum: "{{ item.checksum | default(omit) }}"
     owner: "{{ prosody_server_username }}"
     group: "{{ prosody_server_username }}"
     mode: "400"
@@ -38,6 +41,7 @@
 - name: Remove Prosody plugin.
   when:
     - prosody_config.plugin_paths is defined
+    - prosody_plugins is defined
     - item.state | default('present') == "absent"
   file:
     # FIXME: Which plugin path? Just the first one, for now.

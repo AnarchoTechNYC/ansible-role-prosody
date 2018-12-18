@@ -14,6 +14,7 @@ To configure a Prosody server, several default variables are defined:
     * `name`: Name of the plugin to download and install.
     * `state`: Whether the plugin should be installed (`present`, the default), or uninstalled (`absent`).
     * `version`: Branch or commit of the version of the community plugin to download and install.
+    * `checksum`: Optional verification digest in `<algorithm>:<digest>` notation to compare the downloaded plugin file against. For example, `sha1:6d84b4f4d5108bce25fa9103157ddfc519362460`. See the `checksum` parameter for Ansible's [`get_url` module](https://docs.ansible.com/ansible/latest/modules/get_url_module.html) for details.
 
 The bulk of Prosody's configuration is handled by a dictionary variable called `prosody_config`. It describes the state of the Prosody server configuration file. The dictionary's keys map almost one-to-one to the [variables in the Prosody server configuration file](https://prosody.im/doc/configure).
 
