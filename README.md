@@ -20,6 +20,17 @@ The bulk of Prosody's configuration is handled by a dictionary variable called `
 
 An exception is the `VirtualHosts` key, which is a list of dictionaries each [describing a Prosody `VirtualHost` to configure](#configuring-prosody-virtualhosts). Another exception is the `Components` key, which is a list of dictionaries describing a given [Prosody Component](https://prosody.im/doc/components). Components must have a `hostname` key, and one of either `plugin` (for internal components) or `secret` (for external components). They may optionally also contain an `options` list, which is a dictionary of component options and their values.
 
+Since the exact structure of the `prosody_config` dictionary is not always predictable (e.g., a given option may be defined as part of a `VirtualHost`-specific configuration rather than in the Prosody configuration's global section, or said option may be relevant only to a certain Prosody module), numerous convenience variables provide more easily accessible names for these cases. For example `prosody_http_files_dir` is a role default top-level variable that you can use as the default for [the `http_files_dir` option](https://prosody.im/doc/modules/mod_http_files) wherever it may happen to appear under `prosody_config`.
+
+Among these convenience variables are:
+
+* `prosody_admins`: List of bare JabberIDs (e.g., `admin@example.com`) granted administrative privileges. This can be used as the value of the `admins` configuration option in either the global section or a given `VirtualHost`. Defaults to an empty list (`[]`).
+* `prosody_modules_enabled`: List of Prosody modules to enable. This can be used as the value of the `modules_enabled` configuration option in either the global section or a given `VirtualHost`.
+* `prosody_modules_disabled`: List of Prosody modules to disable. This can be used as the value of the `modules_disabled` configuration option in either the global section or a given `VirtualHost`. Defaults to an empty list (`[]`).
+* `prosody_http_files_dir`: Path to a directory from which Prosody's various HTTP modules should serve static files, i.e., [the Prosody HTTP server](https://prosody.im/doc/http) document root.
+
+Refer to the [`defaults/main.yml`](defaults/main.yml) file for a complete accounting of these variables.
+
 It may be helpful to see a few examples.
 
 1. Default Prosody installation:

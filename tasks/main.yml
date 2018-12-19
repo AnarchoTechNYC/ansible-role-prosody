@@ -37,6 +37,7 @@
     group: "{{ prosody_server_username }}"
     mode: "400"
   loop: "{{ prosody_plugins }}"
+  notify: Restart Prosody.
 
 - name: Remove Prosody plugin.
   when:

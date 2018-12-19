@@ -15,7 +15,29 @@ prosody_plugins_src_base_url: https://hg.prosody.im/prosody-modules/raw-file/
 #    # If set, hash of the downloaded module file to compare against.
 #    checksum: sha1:6d84b4f4d5108bce25fa9103157ddfc519362460
 
-# Prosody configuration settings.
+# Convenience variables for setting Prosody configuration options.
+prosody_admins: []
+prosody_modules_enabled:
+  - roster
+  - saslauth
+  - tls
+  - dialback
+  - disco
+  - carbons
+  - pep
+  - private
+  - blocklist
+  - vcard
+  - version
+  - uptime
+  - time
+  - ping
+  - register
+  - admin_adhoc
+prosody_modules_disabled: []
+prosody_http_files_dir: "/var/www/prosody"
+
+# Complete Prosody configuration.
 prosody_config:
 
   # Default TCP socket network interfaces to bind.
@@ -30,30 +52,13 @@ prosody_config:
   #  - "127.0.0.1"
   #  - "::1"
 
-  admins: []
+  admins: "{{ prosody_admins }}"
 
   #data_path: "{{ prosody_server_data_dir }}"
   #plugin_paths: []
 
-  modules_enabled:
-    - roster
-    - saslauth
-    - tls
-    - dialback
-    - disco
-    - carbons
-    - pep
-    - private
-    - blocklist
-    - vcard
-    - version
-    - uptime
-    - time
-    - ping
-    - register
-    - admin_adhoc
-
-  modules_disabled: []
+  modules_enabled: "{{ prosody_modules_enabled }}"
+  modules_disabled: "{{ prosody_modules_disabled }}"
 
   allow_registration: false
 
