@@ -1,4 +1,8 @@
 ---
+- name: Configure Prosody VirtualHosts from Onion services.
+  when: prosody_virtualhost_onions is defined
+  import_tasks: configure-virtualhost-onions.yml
+
 - name: Install Prosody dependencies.
   include_tasks: "install-{{ ansible_os_family | default('Debian') | lower }}.yml"
 

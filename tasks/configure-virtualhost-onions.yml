@@ -1,0 +1,27 @@
+---
+- name: Collect Prosody Onion domains.
+  register: onion_result
+  shell: >
+    cat {{ tor_onion_services_dir | default('/var/lib/tor') + '/' + item.name + '/hostname' | quote }}
+    | cut -d ' ' -f 1 | sort | uniq
+  loop: "{{ prosody_virtualhost_onions }}"
+  changed_when: false
+
+- name: Register Prosody Onion VirtualHosts.
+  set_fact:
+    prosody_onion_virtualhosts: "{{ onion_result.results | map(attribute='stdout_lines') | list | flatten | unique }}"
+
+- name: Insert Prosody Onion VirtualHosts to Prosody configuration.
+  set_fact:
+    prosody_config: >-
+      {%- for x, y in item.1.options.items() -%}
+        {%- if item.1.options.update({x: y | replace('__PROSODY_DOMAIN__', item.0)}) -%}
+          {#- Do nothing. -#}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ prosody_config | combine({
+          'VirtualHosts': prosody_config.VirtualHosts + [{
+              'domain': item.0
+          } | combine(item.1.options, recursive=True)]
+      }, recursive=True) }}
+  loop: "{{ prosody_onion_virtualhosts | product(prosody_virtualhost_onions) | list }}"

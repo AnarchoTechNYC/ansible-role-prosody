@@ -37,6 +37,17 @@ prosody_modules_enabled:
 prosody_modules_disabled: []
 prosody_http_files_dir: "/var/www/prosody"
 
+# List of Tor Onion service names whose onions should be added to the
+# Prosody configuration's VirtualHosts list. This is mainly intended
+# to make it possible to use Prosody HTTP modules that need to pass an
+# HTTP Host header matching one of Tor's stealth Onion service onions.
+#prosody_virtualhost_onions:
+#  - name: example-onion
+#    options: # Same as the `prosody_config.VirtualHost` keys.
+#      # The special string `__PROSODY_DOMAIN__` will be replaced with
+#      # the Onion domain extracted from the Tor `hostname` file.
+#      http_external_url: "http://__PROSODY_DOMAIN__/"
+
 # Complete Prosody configuration.
 prosody_config:
 
