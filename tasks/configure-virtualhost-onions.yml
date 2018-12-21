@@ -11,12 +11,22 @@
   set_fact:
     prosody_onion_virtualhosts: "{{ onion_result.results | map(attribute='stdout_lines') | list | flatten | unique }}"
 
+# This task is a bit of a clever hack: it updates the `prosody_config`
+# dictionary in-place by using the `|combine()` filter, after looping
+# over the `options` dictionary in the `prosody_virtualhost_onions`
+# variable. In order to do this entirely in a single task, some Jinja
+# tricks are employed, notably using no-op `if` blocks to actually
+# update the values of the items in the `item.1.options` dictionary.
 - name: Insert Prosody Onion VirtualHosts to Prosody configuration.
   set_fact:
     prosody_config: >-
-      {%- for x, y in item.1.options.items() -%}
-        {%- if item.1.options.update({x: y | replace('__PROSODY_DOMAIN__', item.0)}) -%}
-          {#- Do nothing. -#}
+      {%- for k, v in item.1.options.items() -%}
+        {%- if v is string -%}
+          {%- if item.1.options.update({k: v | replace('__PROSODY_DOMAIN__', item.0)}) -%}{%- endif -%}
+        {%- elif v is sequence -%}
+          {%- for x in v -%}
+            {%- if item.1.options[k].__setitem__(loop.index0, x | replace('__PROSODY_DOMAIN__', item.0)) -%}{%- endif -%}
+          {%- endfor -%}
         {%- endif -%}
       {%- endfor -%}
       {{ prosody_config | combine({
