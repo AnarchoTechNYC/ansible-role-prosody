@@ -54,6 +54,35 @@
     state: "{{ item.state | default('absent') }}"
   loop: "{{ prosody_plugins }}"
 
+# TODO: Support variable directory placements.
+# TODO: Support specific TLS key/crt files rather than just `localhost`.
+- name: Manage VirtualHost TLS keys and certificates.
+  vars:
+    file_types:
+      - key
+      - crt
+  block:
+    - name: Link VirtualHost TLS keys and certificates.
+      when:
+        - prosody_config.VirtualHosts is defined
+        - item.0.domain != "localhost"
+        - item.0.state | default('present') == "present"
+      file:
+        path: "/etc/prosody/certs/{{ item.0.domain }}.{{ item.1 }}"
+        state: link
+        src: "localhost.{{ item.1 }}"
+      loop: "{{ prosody_config.VirtualHosts | product(file_types) | list }}"
+
+    - name: Remove TLS keys and certificates from absent VirtualHosts.
+      when:
+        - prosody_config.VirtualHosts is defined
+        - item.0.domain != "localhost"
+        - item.0.state | default('present') == "absent"
+      file:
+        path: "/etc/prosody/certs/{{ item.0.domain }}.{{ item.1 }}"
+        state: absent
+      loop: "{{ prosody_config.VirtualHosts | product(file_types) | list }}"
+
 - name: Write Prosody configuration.
   template:
     src: prosody.cfg.lua.j2

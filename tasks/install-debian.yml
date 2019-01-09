@@ -30,3 +30,15 @@
     group: "{{ prosody_server_username }}"
     mode: "400"
   notify: Restart Prosody.
+
+# FIXME: Variablize this so not only `localhost.{crt,key}` are used.
+- name: Enable HTTPS TLS certificates.
+  file:
+    src: "{{ item.src }}"
+    dest: "/etc/prosody/certs/{{ item.dest }}"
+    state: link
+  loop:
+    - src: localhost.key
+      dest: https.key
+    - src: localhost.crt
+      dest: https.crt
