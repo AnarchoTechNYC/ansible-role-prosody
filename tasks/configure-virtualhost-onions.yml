@@ -20,6 +20,7 @@
 - name: Insert Prosody Onion VirtualHosts to Prosody configuration.
   set_fact:
     prosody_config: >-
+      {%- if item.1.options is defined -%}
       {%- for k, v in item.1.options.items() -%}
         {%- if v is string -%}
           {%- if item.1.options.update({k: v | replace('__PROSODY_DOMAIN__', item.0)}) -%}{%- endif -%}
@@ -29,9 +30,10 @@
           {%- endfor -%}
         {%- endif -%}
       {%- endfor -%}
+      {%- endif -%}
       {{ prosody_config | combine({
           'VirtualHosts': prosody_config.VirtualHosts + [{
               'domain': item.0
-          } | combine(item.1.options, recursive=True)]
+          } | combine(item.1.options | default({}), recursive=True)]
       }, recursive=True) }}
   loop: "{{ prosody_onion_virtualhosts | product(prosody_virtualhost_onions) | list }}"
