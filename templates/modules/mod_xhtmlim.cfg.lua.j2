@@ -1,0 +1,13 @@
+{#
+    Prosody server template fragment for the `xhtmlim` module.
+    For details, see:
+        https://modules.prosody.im/mod_xhtmlim.html
+#}
+{% if cfg.strip_xhtml_style is defined %}
+
+strip_xhtml_style = {{ cfg.strip_xhtml_style | bool | lower }}
+{% endif %}
+{% if cfg.bounce_invalid_xhtml is defined %}
+
+bounce_invalid_xhtml = {{ cfg.bounce_invalid_xhtml | bool | lower }}
+{% endif %}

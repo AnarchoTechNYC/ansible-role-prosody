@@ -1,0 +1,9 @@
+{#
+    Prosody server template fragment for the `http_favicon` module.
+    For details, see:
+        https://modules.prosody.im/mod_http_favicon.html
+#}
+{% if cfg.favicon is defined %}
+
+favicon = "{{ cfg.favicon }}"
+{% endif %}

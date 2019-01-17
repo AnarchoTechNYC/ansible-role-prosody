@@ -1,0 +1,37 @@
+{#
+    Prosody server template fragment for the `e2e_policy` module.
+    For details, see:
+        https://modules.prosody.im/mod_e2e_policy.html
+#}
+{% if cfg.e2e_policy_chat is defined %}
+
+e2e_policy_chat = {{ cfg.e2e_policy_chat }}
+{% endif %}
+{% if cfg.e2e_policy_muc is defined %}
+
+e2e_policy_muc = {{ cfg.e2e_policy_muc }}
+{% endif %}
+{% if cfg.e2e_policy_whitelist is defined %}
+
+e2e_policy_whitelist = {
+{% for jid in cfg.e2e_policy_whitelist %}
+    "{{ jid }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.e2e_policy_message_optional_chat is defined %}
+
+e2e_policy_message_optional_chat = {{ cfg.e2e_policy_message_optional_chat }}
+{% endif %}
+{% if cfg.e2e_policy_message_required_chat is defined %}
+
+e2e_policy_message_required_chat = {{ cfg.e2e_policy_message_required_chat }}
+{% endif %}
+{% if cfg.e2e_policy_message_optional_muc is defined %}
+
+e2e_policy_message_optional_muc = {{ cfg.e2e_policy_message_optional_muc }}
+{% endif %}
+{% if cfg.e2e_policy_message_required_muc is defined %}
+
+e2e_policy_message_required_muc = {{ cfg.e2e_policy_message_required_muc }}
+{% endif %}

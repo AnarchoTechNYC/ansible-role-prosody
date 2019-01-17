@@ -1,0 +1,36 @@
+{#
+    Prosody server template fragment for the `onions` module.
+    For details, see:
+        https://modules.prosody.im/mod_onions.html
+#}
+{% if cfg.onions_socks5_host is defined %}
+
+onions_socks5_host = "{{ cfg.onions_socks5_host }}"
+{% endif %}
+{% if cfg.onions_socks5_port is defined %}
+
+onions_socks5_port = {{ cfg.onions_socks5_port | int }}
+{% endif %}
+{% if cfg.onions_only is defined %}
+
+onions_only = {{ cfg.onions_only | bool | lower }}
+{% endif %}
+{% if cfg.onions_tor_all is defined %}
+
+onions_tor_all = {{ cfg.onions_tor_all | bool | lower }}
+{% endif %}
+{% if cfg.onions_map is defined %}
+
+onions_map = {
+{% for domain, onion in cfg.onions_map.items() %}
+    ["{{ domain }}"] = {
+{% if onion.host is defined %}
+        host = "{{ onion.host }}";
+{% endif %}
+{% if onion.port is defined %}
+        port = "{{ onion.port }}";
+{% endif %}
+    };
+{% endfor %}
+}
+{% endif %}

@@ -1,0 +1,9 @@
+{#
+    Prosody server template fragment for the `strict_https` module.
+    For details, see:
+        https://modules.prosody.im/mod_strict_https.html
+#}
+{% if cfg.hsts_header is defined %}
+
+hsts_header = "{{ cfg.hsts_header }}"
+{% endif %}
