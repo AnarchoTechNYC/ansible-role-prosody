@@ -1,0 +1,9 @@
+{#
+    Prosody server template fragment for the `welcome` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_welcom
+#}
+{% if cfg.welcome_message is defined %}
+
+welcome_message = "{{ cfg.welcome_message }}"
+{% endif %}

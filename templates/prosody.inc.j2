@@ -2,6 +2,14 @@
     This is a template fragment (included file) for the Prosody
     server's configuration. It handles writing Lua based on the
     values of either the global section or a given VirtualHost.
+
+    This template is passed the `cfg` Jinja context variable, a
+    copy of the resolved `prosody_config` variable set by the
+    Ansible play. To implement configuration options for various
+    Prosody plugins ("modules"), it further includes a template
+    located in the `modules/` directory.
+
+    Core configuration options are defined directly in this file.
 #}
 admins = {
 {% if cfg.admins is defined %}
@@ -38,118 +46,6 @@ modules_disabled = {
 {% endfor %}
 }
 {% endif %}
-{% if cfg.allow_registration is defined %}
-
-allow_registration = {{ cfg.allow_registration | bool | lower }}
-{% endif %}
-{% if cfg.registration_blacklist is defined %}
-
-registration_blacklist = {
-{% for ip_address in cfg.registration_blacklist %}
-    "{{ ip_address }}";
-{% endfor %}
-}
-{% endif %}
-{% if cfg.registration_whitelist is defined %}
-
-registration_whitelist = {
-{% for ip_address in cfg.registration_whitelist %}
-    "{{ ip_address }}";
-{% endfor %}
-}
-{% endif %}
-{% if cfg.whitelist_registration_only is defined %}
-
-whitelist_registration_only = {{ cfg.whitelist_registration_only | bool | lower }}
-{% endif %}
-{% if cfg.min_seconds_between_registrations is defined %}
-
-min_seconds_between_registrations = {{ cfg.min_seconds_between_registrations | int }}
-{% endif %}
-{% if cfg.registration_throttle_max is defined %}
-
-registration_throttle_max = {{ cfg.registration_throttle_max | int }}
-{% endif %}
-{% if cfg.registration_throttle_period is defined %}
-
-registration_throttle_period = {{ cfg.registration_throttle_period | int }}
-{% endif %}
-{% if cfg.registration_throttle_cache_size is defined %}
-
-registration_throttle_cache_size = {{ cfg.registration_throttle_cache_size | int }}
-{% endif %}
-{% if cfg.blacklist_on_registration_throttle_overload is defined %}
-
-blacklist_on_registration_throttle_overload = {{ cfg.blacklist_on_registration_throttle_overload | bool | lower }}
-{% endif %}
-{% if cfg.c2s_require_encryption is defined %}
-
-c2s_require_encryption = {{ cfg.c2s_require_encryption | bool | lower }}
-{% endif %}
-{% if cfg.c2s_ports is defined %}
-
-c2s_ports = {
-{% for port in cfg.c2s_ports %}
-    {{ port }},
-{% endfor %}
-}
-{% endif %}
-{% if cfg.c2s_interfaces is defined %}
-
-c2s_interfaces = {
-{% for addr in cfg.c2s_interfaces %}
-    "{{ addr }}",
-{% endfor %}
-}
-{% endif %}
-{% if cfg.s2s_ports is defined %}
-
-s2s_ports = {
-{% for port in cfg.s2s_ports %}
-    {{ port }},
-{% endfor %}
-}
-{% endif %}
-{% if cfg.s2s_interfaces is defined %}
-
-s2s_interfaces = {
-{% for addr in cfg.s2s_interfaces %}
-    "{{ addr }}",
-{% endfor %}
-}
-{% endif %}
-{% if cfg.s2s_require_encryption is defined %}
-
-s2s_require_encryption = {{ cfg.s2s_require_encryption | bool | lower }}
-{% endif %}
-{% if cfg.s2s_secure_auth is defined %}
-
-s2s_secure_auth = {{ cfg.s2s_secure_auth | bool | lower }}
-{% endif %}
-{% if cfg.s2s_insecure_domains is defined %}
-
-s2s_insecure_domains = {
-{% for domain in cfg.s2s_insecure_domains %}
-    "{{ domain }}";
-{% endfor %}
-}
-{% endif %}
-{% if cfg.s2s_secure_domains is defined %}
-
-s2s_secure_domains = {
-{% for domain in cfg.s2s_secure_domains %}
-    "{{ domain }}";
-{% endfor %}
-}
-{% endif %}
-{% if cfg.allow_anonymous_s2s is defined %}
-
-allow_anonymous_s2s = {{ cfg.allow_anonymous_s2s }}
-{% endif %}
-{% if cfg.pidfile is defined %}
-
-pidfile = "{{ cfg.pidfile }}"
-{% endif %}
 {% if cfg.authentication is defined %}
 
 authentication = "{{ cfg.authentication }}"
@@ -166,34 +62,6 @@ storage = {% if cfg.storage is mapping %}{
 {% endfor %}{% endfor %}
 }{% else %}"{{ cfg.storage }}"{% endif %}
 {% endif %}
-{% if cfg.sql_manage_tables is defined %}
-
-sql_manage_tables = {{ cfg.sql_manage_tables | bool | lower }}
-{% endif %}
-{% if cfg.sql is defined %}
-
-sql = {
-    {% if cfg.sql.driver is defined %}
-    driver = "{{ cfg.sql.driver }}",
-    {% endif %}
-    {% if cfg.sql.database is defined %}
-    database = "{{ cfg.sql.database }}",
-    {% endif %}
-    {% if cfg.sql.username is defined %}
-    username = "{{ cfg.sql.username }}",
-    {% endif %}
-    {% if cfg.sql.password is defined %}
-    password = "{{ cfg.sql.password }}",
-    {% endif %}
-    {% if cfg.sql.host is defined %}
-    host = "{{ cfg.sql.host }}",
-    {% endif %}
-}
-{% endif %}
-{% if cfg.archive_expires_after is defined %}
-
-archive_expires_after = "{{ cfg.archive_expires_after }}"
-{% endif %}
 {% if cfg.log is defined %}
 
 {# TODO: Templatize advanced logging rules: https://prosody.im/doc/advanced_logging #}
@@ -209,6 +77,21 @@ log = {% if cfg.log is string %}"{{ cfg.log }}"{% elif cfg.log is mapping %}{
 
 statistics = "{{ cfg.statistics }}"
 {% endif %}
+{% if cfg.statistics_config is defined %}
+
+statistics_config = {
+{% if cfg.statistics_config.statsd_server is defined %}
+    statsd_server = "{{ cfg.statistics_config.statsd_server }}";
+{% endif %}
+{% if cfg.statistics_config.statsd_port is defined %}
+    statsd_port = "{{ cfg.statistics_config.statsd_port }}";
+{% endif %}
+}
+{% endif %}
+{% if cfg.statistics_interval is defined %}
+
+statistics_interval = {{ cfg.statistics_interval | int }}
+{% endif %}
 {% if cfg.conflict_resolve is defined %}
 
 conflict_resolve = "{{ cfg.conflict_resolve }}"
@@ -222,166 +105,53 @@ ignore_presence_priority = {{ cfg.ignore_presence_priority | bool | lower }}
 certificates = "{{ cfg.certificates }}"
 {% endif %}
 {% if cfg.certificate is defined %}
-    certificate = "{{ cfg.certificate }}"
+
+certificate = "{{ cfg.certificate }}"
 {% endif %}
 {% if cfg.key is defined %}
-    key = "{{ cfg.key }}"
+
+key = "{{ cfg.key }}"
 {% endif %}
 {% if cfg.password is defined %}
-    password = "{{ cfg.password }}"
-{% endif %}
-{% if cfg.http_default_host is defined %}
 
-http_default_host = "{{ cfg.http_default_host }}"
+password = "{{ cfg.password }}"
 {% endif %}
-{% if cfg.http_ports is defined %}
 
-http_ports = {
-{% for port in cfg.http_ports %}
-    {{ port | int }};
-{% endfor %}
-}
-{% endif %}
-{% if cfg.http_interfaces is defined %}
+{########################################################
+## PROSODY CORE MODULES:                                #
+## Include configuration fragments for Prosody modules. #
+#########################################################}
+{% include "modules/mod_storage_sql.cfg.lua.j2" %}
 
-http_interfaces = {
-{% for interface in cfg.http_interfaces %}
-    {{ interface }};
-{% endfor %}
-}
-{% endif %}
-{% if cfg.https_ports is defined %}
+{% include "modules/mod_c2s.cfg.lua.j2" %}
 
-https_ports = {
-{% for port in cfg.https_ports %}
-    {{ port | int }};
-{% endfor %}
-}
-{% endif %}
-{% if cfg.https_interfaces is defined %}
+{% include "modules/mod_s2s.cfg.lua.j2" %}
 
-https_interfaces = {
-{% for interface in cfg.https_interfaces %}
-    {{ interface }};
-{% endfor %}
-}
-{% endif %}
-{% if cfg.https_certificate is defined %}
+{% include "modules/mod_posix.cfg.lua.j2" %}
 
-https_certificate = {% if cfg.https_certificate is string %}"{{ cfg.https_certificate }}"{% elif cfg.https_certificate is mapping %}
-{
-{% for port, path in cfg.https_certificate.items() %}
-    [{{ port | int }}] = "{{ path }}";
-{% endfor %}
-}
-{% endif %}
-{% endif %}
-{% if cfg.https_ssl is defined %}
+{% include "modules/mod_register.cfg.lua.j2" %}
 
-https_ssl = {
-{% if cfg.https_ssl.certificate is defined %}
-    certificate = "{{ cfg.https_ssl.certificate }}";
-{% endif %}
-{% if cfg.https_ssl.key is defined %}
-    key = "{{ cfg.https_ssl.key }}";
-{% endif %}
-}
-{% endif %}
-{% if cfg.http_paths is defined %}
+{% include "modules/mod_motd.cfg.lua.j2" %}
 
-http_paths = {
-{% for k, path in cfg.http_paths.items() %}
-    {{ k }} = "{{ path }}";
-{% endfor %}
-}
-{% endif %}
-{% if cfg.http_external_url is defined %}
+{% include "modules/mod_welcome.cfg.lua.j2" %}
 
-http_external_url = "{{ cfg.http_external_url }}"
-{% endif %}
-{% if cfg.http_files_dir is defined %}
+{% include "modules/mod_mam.cfg.lua.j2" %}
 
-http_files_dir = "{{ cfg.http_files_dir }}"
-{% endif %}
-{% if cfg.http_index_files is defined %}
+{% include "modules/mod_http.cfg.lua.j2" %}
 
-http_index_files = {
-{% for file in cfg.http_index_files %}
-    "{{ file }}";
-}
-{% endfor %}
-{% endif %}
-{% if cfg.http_dir_listing is defined %}
+{% include "modules/mod_http_files.cfg.lua.j2" %}
 
-http_dir_listing = {{ cfg.http_dir_listing | bool | lower }}
-{% endif %}
-{% if cfg.mime_types_file is defined %}
+{% include "modules/mod_bosh.cfg.lua.j2" %}
 
-mime_types_file = "{{ cfg.mime_types_file }}"
-{% endif %}
-{% if cfg.http_files_cache_max_file_size is defined %}
+{########################################################
+## PROSODY COMMUNITY MODULES:                           #
+## Include configuration fragments for Prosody modules. #
+#########################################################}
+{% include "modules/mod_conversejs.cfg.lua.j2" %}
 
-http_files_cache_max_file_size = {{ cfg.http_files_cache_max_file_size | int }}
-{% endif %}
-{% if cfg.cross_domain_bosh is defined %}
-
-cross_domain_bosh = {{ cfg.cross_domain_bosh | bool | lower }}
-{% endif %}
-{% if cfg.consider_bosh_secure is defined %}
-
-consider_bosh_secure = {{ cfg.consider_bosh_secure | bool | lower }}
-{% endif %}
-{% if cfg.bosh_max_inactivity is defined %}
-
-bosh_max_inactivity = {{ cfg.bosh_max_inactivity | int }}
-{% endif %}
-{% if cfg.bosh_default_hold is defined %}
-
-bosh_default_hold = {{ cfg.bosh_default_hold | int }}
-{% endif %}
-{% if cfg.bosh_max_requests is defined %}
-
-bosh_max_requests = {{ cfg.bosh_max_requests | int }}
-{% endif %}
-{% if cfg.trusted_proxies is defined %}
-trusted_proxies = {
-{% for proxy in cfg.trusted_proxies %}
-    "{{ proxy }}";
-{% endfor %}
-}
-{% endif %}
-{% if cfg.conversejs_options is defined %}
-
-conversejs_options = {
-{% for k, v in cfg.conversejs_options.items() %}
-    {{ k }} = "{{ v }}";
-{% endfor %}
-}
-{% endif %}
-{% if cfg.conversejs_cdn is defined %}
-
-conversejs_cdn = "{{ cfg.conversejs_cdn }}"
-{% endif %}
-{% if cfg.conversejs_version is defined %}
-
-conversejs_version = "{{ cfg.conversejs_version }}"
-{% endif %}
-{% if cfg.conversejs_script is defined %}
-
-conversejs_script = "{{ cfg.conversejs_script }}"
-{% endif %}
-{% if cfg.conversejs_css is defined %}
-
-conversejs_css = "{{ cfg.conversejs_css }}"
-{% endif %}
-{% if cfg.conversejs_tags is defined %}
-
-conversejs_tags = {
-{% for element in cfg.conversejs_tags %}
-    [[{{ element }}]];
-{% endfor %}
-}
-{% endif %}
+{########################################################
+## PROSODY COMPONENT OPTIONS:                           #
+#########################################################}
 {% if cfg.component_ports is defined %}
 
 component_ports = {

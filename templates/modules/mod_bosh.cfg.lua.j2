@@ -1,0 +1,32 @@
+{#
+    Prosody server template fragment for the `bosh` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_bosh
+#}
+{% if cfg.bosh_max_inactivity is defined %}
+
+bosh_max_inactivity = {{ cfg.bosh_max_inactivity | int }}
+{% endif %}
+{% if cfg.cross_domain_bosh is defined %}
+
+cross_domain_bosh = {{ cfg.cross_domain_bosh | bool | lower }}
+{% endif %}
+{% if cfg.consider_bosh_secure is defined %}
+
+consider_bosh_secure = {{ cfg.consider_bosh_secure | bool | lower }}
+{% endif %}
+{% if cfg.bosh_default_hold is defined %}
+
+bosh_default_hold = {{ cfg.bosh_default_hold | int }}
+{% endif %}
+{% if cfg.bosh_max_requests is defined %}
+
+bosh_max_requests = {{ cfg.bosh_max_requests | int }}
+{% endif %}
+{% if cfg.trusted_proxies is defined %}
+trusted_proxies = {
+{% for proxy in cfg.trusted_proxies %}
+    "{{ proxy }}";
+{% endfor %}
+}
+{% endif %}

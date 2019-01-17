@@ -1,0 +1,13 @@
+{#
+    Prosody server template fragment for the `motd` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_motd
+#}
+{% if cfg.motd_text is defined %}
+
+motd_text = [[{{ cfg.motd_text }}]]
+{% endif %}
+{% if cfg.motd_jid is defined %}
+
+motd_jid = "{{ cfg.motd_jid }}"
+{% endif %}

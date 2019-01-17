@@ -1,0 +1,49 @@
+{#
+    Prosody server template fragment for the `s2s` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_s2s
+#}
+{% if cfg.s2s_ports is defined %}
+
+s2s_ports = {
+{% for port in cfg.s2s_ports %}
+    {{ port }},
+{% endfor %}
+}
+{% endif %}
+{% if cfg.s2s_interfaces is defined %}
+
+s2s_interfaces = {
+{% for addr in cfg.s2s_interfaces %}
+    "{{ addr }}",
+{% endfor %}
+}
+{% endif %}
+{% if cfg.s2s_require_encryption is defined %}
+
+s2s_require_encryption = {{ cfg.s2s_require_encryption | bool | lower }}
+{% endif %}
+{% if cfg.s2s_secure_auth is defined %}
+
+s2s_secure_auth = {{ cfg.s2s_secure_auth | bool | lower }}
+{% endif %}
+{% if cfg.s2s_insecure_domains is defined %}
+
+s2s_insecure_domains = {
+{% for domain in cfg.s2s_insecure_domains %}
+    "{{ domain }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.s2s_secure_domains is defined %}
+
+s2s_secure_domains = {
+{% for domain in cfg.s2s_secure_domains %}
+    "{{ domain }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.allow_anonymous_s2s is defined %}
+
+allow_anonymous_s2s = {{ cfg.allow_anonymous_s2s }}
+{% endif %}

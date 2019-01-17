@@ -1,0 +1,29 @@
+{#
+    Prosody server template fragment for the `storage_sql` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_storage_sql
+#}
+{% if cfg.sql_manage_tables is defined %}
+
+sql_manage_tables = {{ cfg.sql_manage_tables | bool | lower }}
+{% endif %}
+{% if cfg.sql is defined %}
+
+sql = {
+    {% if cfg.sql.driver is defined %}
+    driver = "{{ cfg.sql.driver }}",
+    {% endif %}
+    {% if cfg.sql.database is defined %}
+    database = "{{ cfg.sql.database }}",
+    {% endif %}
+    {% if cfg.sql.username is defined %}
+    username = "{{ cfg.sql.username }}",
+    {% endif %}
+    {% if cfg.sql.password is defined %}
+    password = "{{ cfg.sql.password }}",
+    {% endif %}
+    {% if cfg.sql.host is defined %}
+    host = "{{ cfg.sql.host }}",
+    {% endif %}
+}
+{% endif %}

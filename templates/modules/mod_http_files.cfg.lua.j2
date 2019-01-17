@@ -1,0 +1,29 @@
+{#
+    Prosody server template fragment for the `http_files` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_http_files
+#}
+{% if cfg.http_files_dir is defined %}
+
+http_files_dir = "{{ cfg.http_files_dir }}"
+{% endif %}
+{% if cfg.http_index_files is defined %}
+
+http_index_files = {
+{% for file in cfg.http_index_files %}
+    "{{ file }}";
+}
+{% endfor %}
+{% endif %}
+{% if cfg.http_dir_listing is defined %}
+
+http_dir_listing = {{ cfg.http_dir_listing | bool | lower }}
+{% endif %}
+{% if cfg.mime_types_file is defined %}
+
+mime_types_file = "{{ cfg.mime_types_file }}"
+{% endif %}
+{% if cfg.http_files_cache_max_file_size is defined %}
+
+http_files_cache_max_file_size = {{ cfg.http_files_cache_max_file_size | int }}
+{% endif %}

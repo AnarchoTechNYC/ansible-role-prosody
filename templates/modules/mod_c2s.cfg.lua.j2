@@ -1,0 +1,25 @@
+{#
+    Prosody server template fragment for the `c2s` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_c2s
+#}
+{% if cfg.c2s_require_encryption is defined %}
+
+c2s_require_encryption = {{ cfg.c2s_require_encryption | bool | lower }}
+{% endif %}
+{% if cfg.c2s_ports is defined %}
+
+c2s_ports = {
+{% for port in cfg.c2s_ports %}
+    {{ port }},
+{% endfor %}
+}
+{% endif %}
+{% if cfg.c2s_interfaces is defined %}
+
+c2s_interfaces = {
+{% for addr in cfg.c2s_interfaces %}
+    "{{ addr }}",
+{% endfor %}
+}
+{% endif %}

@@ -1,0 +1,21 @@
+{#
+    Prosody server template fragment for the `posix` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_posix
+#}
+{% if cfg.run_as_root is defined %}
+
+run_as_root = {{ cfg.run_as_root | bool | lower }}
+{% endif %}
+{% if cfg.daemonize is defined %}
+
+daemonize = {{ cfg.daemonize | bool | lower }}
+{% endif %}
+{% if cfg.pidfile is defined %}
+
+pidfile = "{{ cfg.pidfile }}"
+{% endif %}
+{% if cfg.umask is defined %}
+
+umask = "{{ cfg.umask }}"
+{% endif %}

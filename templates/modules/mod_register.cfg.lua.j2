@@ -1,0 +1,57 @@
+{#
+    Prosody server template fragment for the `register` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_register
+#}
+{% if cfg.registration_title is defined %}
+
+registration_title = "{{ cfg.registration_title }}"
+{% endif %}
+{% if cfg.registration_instructions is defined %}
+
+registration_instructions = "{{ cfg.registration_instructions }}"
+{% endif %}
+{% if cfg.allow_registration is defined %}
+
+allow_registration = {{ cfg.allow_registration | bool | lower }}
+{% endif %}
+{% if cfg.registration_blacklist is defined %}
+
+registration_blacklist = {
+{% for ip_address in cfg.registration_blacklist %}
+    "{{ ip_address }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.registration_whitelist is defined %}
+
+registration_whitelist = {
+{% for ip_address in cfg.registration_whitelist %}
+    "{{ ip_address }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.whitelist_registration_only is defined %}
+
+whitelist_registration_only = {{ cfg.whitelist_registration_only | bool | lower }}
+{% endif %}
+{% if cfg.min_seconds_between_registrations is defined %}
+
+min_seconds_between_registrations = {{ cfg.min_seconds_between_registrations | int }}
+{% endif %}
+{% if cfg.registration_throttle_max is defined %}
+
+registration_throttle_max = {{ cfg.registration_throttle_max | int }}
+{% endif %}
+{% if cfg.registration_throttle_period is defined %}
+
+registration_throttle_period = {{ cfg.registration_throttle_period | int }}
+{% endif %}
+{% if cfg.registration_throttle_cache_size is defined %}
+
+registration_throttle_cache_size = {{ cfg.registration_throttle_cache_size | int }}
+{% endif %}
+{% if cfg.blacklist_on_registration_throttle_overload is defined %}
+
+blacklist_on_registration_throttle_overload = {{ cfg.blacklist_on_registration_throttle_overload | bool | lower }}
+{% endif %}

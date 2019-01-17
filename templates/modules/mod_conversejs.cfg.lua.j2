@@ -1,0 +1,37 @@
+{#
+    Prosody server template fragment for the `conversejs` module.
+    For details, see:
+        https://modules.prosody.im/mod_conversejs.html
+#}
+{% if cfg.conversejs_options is defined %}
+
+conversejs_options = {
+{% for k, v in cfg.conversejs_options.items() %}
+    {{ k }} = "{{ v }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.conversejs_cdn is defined %}
+
+conversejs_cdn = "{{ cfg.conversejs_cdn }}"
+{% endif %}
+{% if cfg.conversejs_version is defined %}
+
+conversejs_version = "{{ cfg.conversejs_version }}"
+{% endif %}
+{% if cfg.conversejs_script is defined %}
+
+conversejs_script = "{{ cfg.conversejs_script }}"
+{% endif %}
+{% if cfg.conversejs_css is defined %}
+
+conversejs_css = "{{ cfg.conversejs_css }}"
+{% endif %}
+{% if cfg.conversejs_tags is defined %}
+
+conversejs_tags = {
+{% for element in cfg.conversejs_tags %}
+    [[{{ element }}]];
+{% endfor %}
+}
+{% endif %}

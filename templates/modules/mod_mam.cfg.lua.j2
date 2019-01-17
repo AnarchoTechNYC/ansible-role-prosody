@@ -1,0 +1,37 @@
+{#
+    Prosody server template fragment for the `mam` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_mam
+#}
+{% if cfg.default_archive_policy is defined %}
+
+default_archive_policy = {% with v=cfg.default_archive_policy %}{% include "../prosody-value.j2" %}{% endwith %}
+{% endif %}
+{% if cfg.archive_expires_after is defined %}
+
+archive_expires_after = "{{ cfg.archive_expires_after }}"
+{% endif %}
+{% if cfg.archive_cleanup_interval is defined %}
+
+archive_cleanup_interval = {{ cfg.archive_cleanup_interval | int }}
+{% endif %}
+{% if cfg.max_archive_query_results is defined %}
+
+max_archive_query_results = {{ cfg.max_archive_query_results | int }}
+{% endif %}
+{% if cfg.archive_store is defined %}
+
+archive_store = "{{ cfg.archive_store }}"
+{% endif %}
+{% if cfg.dont_archive_namespaces is defined %}
+
+dont_archive_namespaces = {
+{% for namespace in cfg.dont_archive_namespaces %}
+    "{{ namespace }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.mam_smart_enable is defined %}
+
+mam_smart_enable = {{ cfg.mam_smart_enable | bool | lower }}
+{% endif %}
