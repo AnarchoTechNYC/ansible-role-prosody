@@ -1,0 +1,9 @@
+{#
+    Prosody server template fragment for the `pep` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_pep
+#}
+{% if cfg.pep_max_items is defined %}
+
+pep_max_items = {{ cfg.pep_max_items | int }}
+{% endif %}

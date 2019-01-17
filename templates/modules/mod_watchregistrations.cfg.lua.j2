@@ -1,0 +1,17 @@
+{#
+    Prosody server template fragment for the `watchregistrations` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_watchregistrations
+#}
+{% if cfg.registration_watchers is defined %}
+
+registration_watchers = {
+{% for w in cfg.registration_watchers %}
+    "{{ w }}";
+{% endfor %}
+}
+{% endif %}
+{% if registration_notification is defined %}
+
+registration_notification = [[{{ cfg.registration_notification }}]]
+{% endif %}

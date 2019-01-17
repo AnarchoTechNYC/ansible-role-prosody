@@ -1,0 +1,13 @@
+{#
+    Prosody server template fragment for the `admin_telnet` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_admin_telnet
+#}
+{% if cfg.console_ports is defined %}
+
+console_ports = {
+{% for port in cfg.console_ports %}
+    {{ port | int }};
+{% endfor %}
+}
+{% endif %}

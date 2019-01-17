@@ -1,0 +1,13 @@
+{#
+    Prosody server template fragment for the `lastlog` module.
+    For details, see:
+        https://modules.prosody.im/mod_lastlog.html
+#}
+{% if cfg.lastlog_ip_address is defined %}
+
+lastlog_ip_address = {{ cfg.lastlog_ip_address | bool | lower }}
+{% endif %}
+{% if cfg.lastlog_stamp_offline is defined %}
+
+lastlog_stamp_offline = {{ cfg.lastlog_stamp_offline | bool | lower }}
+{% endif %}

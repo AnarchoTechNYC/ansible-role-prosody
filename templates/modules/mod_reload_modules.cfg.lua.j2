@@ -1,0 +1,13 @@
+{#
+    Prosody server template fragment for the `reload_modules` module.
+    For details, see:
+        https://modules.prosody.im/mod_reload_modules.html
+#}
+{% if cfg.reload_modules is defined %}
+
+reload_modules = {
+{% for m in cfg.reload_modules %}
+    "{{ m }}";
+{% endfor %}
+}
+{% endif %}

@@ -1,0 +1,17 @@
+{#
+    Prosody server template fragment for the `support_contact` module.
+    For details, see:
+        https://modules.prosody.im/mod_support_contact.html
+#}
+{% if cfg.support_contact is defined %}
+
+support_contact = "{{ cfg.support_contact }}"
+{% endif %}
+{% if cfg.support_contact_nick is defined %}
+
+support_contact_nick = "{{ cfg.support_contact_nick }}"
+{% endif %}
+{% if cfg.support_contact_group is defined %}
+
+support_contact_group = "{{ cfg.support_contact_group }}"
+{% endif %}

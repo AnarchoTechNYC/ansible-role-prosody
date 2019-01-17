@@ -1,0 +1,9 @@
+{#
+    Prosody server template fragment for the `compression` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_compression
+#}
+{% if cfg.compression_level is defined %}
+
+compression_level = {{ cfg.compression_level | int }}
+{% endif %}

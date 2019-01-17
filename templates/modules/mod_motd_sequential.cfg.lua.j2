@@ -1,0 +1,13 @@
+{#
+    Prosody server template fragment for the `motd_sequential` module.
+    For details, see:
+        https://modules.prosody.im/mod_motd_sequential.html
+#}
+{% if cfg.motd_sequential_messages is defined %}
+
+motd_sequential_messages = {
+{% for m in cfg.motd_sequential_messages %}
+    [[{{ m }}]];
+{% endfor %}
+}
+{% endif %}

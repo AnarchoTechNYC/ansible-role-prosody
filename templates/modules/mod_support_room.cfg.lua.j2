@@ -1,0 +1,17 @@
+{#
+    Prosody server template fragment for the `support_room` module.
+    For details, see:
+        https://modules.prosody.im/mod_support_room.html
+#}
+{% if cfg.support_room is defined %}
+
+support_room = "{{ cfg.support_room }}"
+{% endif %}
+{% if cfg.support_room_inviter is defined %}
+
+support_room_inviter = "{{ cfg.support_room_inviter }}"
+{% endif %}
+{% if cfg.support_room_reason is defined %}
+
+support_room_reason = "{{ cfg.support_room_reason }}"
+{% endif %}

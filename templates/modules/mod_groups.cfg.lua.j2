@@ -1,0 +1,9 @@
+{#
+    Prosody server template fragment for the `groups` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_groups
+#}
+{% if cfg.groups_file is defined %}
+
+groups_file = "{{ cfg.groups_file }}"
+{% endif %}

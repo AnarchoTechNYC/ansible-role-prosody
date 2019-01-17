@@ -1,0 +1,29 @@
+{#
+    Prosody server template fragment for the `http_errors` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_http_errors
+#}
+{% if cfg.http_errors_detailed is defined %}
+
+http_errors_detailed = {{ cfg.http_errors_detailed | bool | lower }}
+{% endif %}
+{% if cfg.http_errors_always_show is defined %}
+
+http_errors_always_show = {{ cfg.http_errors_always_show | bool | lower }}
+{% endif %}
+{% if cfg.http_errors_default_message is defined %}
+
+http_errors_default_message = [[{{ cfg.http_errors_default_message }}]]
+{% endif %}
+{% if cfg.http_errors_messages is defined %}
+
+http_errors_messages = {
+{% for code, msgs in cfg.http_errors_messages.items() %}
+    [{{ code | int }}] = {
+{% for msg in msgs %}
+        [[{{ msg }}]];
+{% endfor %}
+    };
+{% endfor %}
+}
+{% endif %}

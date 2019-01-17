@@ -1,0 +1,9 @@
+{#
+    Prosody server template fragment for the `csi_simple` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_csi_simple
+#}
+{% if cfg.csi_queue_size is defined %}
+
+csi_queue_size = {{ cfg.csi_queue_size | int }}
+{% endif %}

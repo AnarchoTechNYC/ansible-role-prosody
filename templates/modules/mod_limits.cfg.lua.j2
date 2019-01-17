@@ -1,0 +1,38 @@
+{#
+    Prosody server template fragment for the `limits` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_limits
+#}
+{% if cfg.limits is defined %}
+
+limits = {
+{% if cfg.limits.c2s is defined %}
+    c2s = {
+        rate = "{{ cfg.limits.c2s.rate }}";
+        burst = "{{ cfg.limits.c2s.burst }}";
+    };
+{% endif %}
+{% if cfg.limits.s2sin is defined %}
+    s2sin = {
+        rate = "{{ cfg.limits.s2sin.rate }}";
+        burst = "{{ cfg.limits.s2sin.burst }}";
+    };
+{% endif %}
+{% if cfg.limits.s2sout is defined %}
+    s2sout = {
+        rate = "{{ cfg.limits.s2sout.rate }}";
+        burst = "{{ cfg.limits.s2sout.burst }}";
+    };
+{% endif %}
+{% if cfg.limits.component is defined %}
+    component = {
+        rate = "{{ cfg.limits.component.rate }}";
+        burst = "{{ cfg.limits.component.burst }}";
+    };
+{% endif %}
+}
+{% endif %}
+{% if cfg.limits_resolution is defined %}
+
+limits_resolution = {{ cfg.limits_resolution | int }}
+{% endif %}

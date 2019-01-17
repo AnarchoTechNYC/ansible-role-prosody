@@ -1,0 +1,21 @@
+{#
+    Prosody server template fragment for the `websocket` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_websocket
+#}
+{% if cfg.c2s_close_timeout is defined %}
+
+c2s_close_timeout = {{ cfg.c2s_close_timeout | int }}
+{% endif %}
+{% if cfg.consider_websocket_secure is defined %}
+
+consider_websocket_secure = {{ cfg.consider_websocket_secure | bool | lower }}
+{% endif %}
+{% if cfg.cross_domain_websocket is defined %}
+
+cross_domain_websocket = {
+{% for d in cfg.cross_domain_websocket %}
+    "{{ d }}";
+{% endfor %}
+}
+{% endif %}

@@ -1,0 +1,23 @@
+{#
+    Prosody server template fragment for the `default_bookmarks` module.
+    For details, see:
+        https://modules.prosody.im/mod_default_bookmarks.html
+#}
+{% if cfg.default_bookmarks is defined %}
+
+default_bookmarks = {
+{% for bookmark in cfg.default_bookmarks %}
+    {
+{% if bookmark.jid is defined %}
+        jid = "{{ bookmark.jid }}";
+{% endif %}
+{% if bookmark.name is defined %}
+        name = "{{ bookmark.name }}";
+{% endif %}
+{% if bookmark.password is defined %}
+        password = "{{ bookmark.password }}";
+{% endif %}
+    };
+{% endfor %}
+}
+{% endif %}

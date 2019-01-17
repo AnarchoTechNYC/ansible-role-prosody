@@ -1,0 +1,17 @@
+{#
+    Prosody server template fragment for the `http_authentication` module.
+    For details, see:
+        https://modules.prosody.im/mod_http_authentication.html
+#}
+{% if cfg.http_credentials is defined %}
+
+http_credentials = "{{ cfg.http_credentials }}"
+{% endif %}
+{% if cfg.unauthenticated_http_endpoints is defined %}
+
+unauthenticated_http_endpoints = {
+{% for endpoint in cfg.unauthenticated_http_endpoints %}
+    "{{ endpoint }}";
+{% endfor %}
+}
+{% endif %}

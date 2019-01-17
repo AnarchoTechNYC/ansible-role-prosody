@@ -1,0 +1,52 @@
+{#
+    Prosody server template fragment for the `server_contact_info` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_server_contact_info
+#}
+{% if cfg.contact_info is defined %}
+
+contact_info = {
+{% if cfg.contact_info.abuse is defined %}
+    abuse = {
+{% for uri in cfg.contact_info.abuse %}
+        "{{ uri }}";
+{% endfor %}
+    }
+{% endif %}
+{% if cfg.contact_info.admin is defined %}
+    admin = {
+{% for uri in cfg.contact_info.admin %}
+        "{{ uri }}";
+{% endfor %}
+    }
+{% endif %}
+{% if cfg.contact_info.feedback is defined %}
+    feedback = {
+{% for uri in cfg.contact_info.feedback %}
+        "{{ uri }}";
+{% endfor %}
+    }
+{% endif %}
+{% if cfg.contact_info.sales is defined %}
+    sales = {
+{% for uri in cfg.contact_info.sales %}
+        "{{ uri }}";
+{% endfor %}
+    }
+{% endif %}
+{% if cfg.contact_info.security is defined %}
+    security = {
+{% for uri in cfg.contact_info.security %}
+        "{{ uri }}";
+{% endfor %}
+    }
+{% endif %}
+{% if cfg.contact_info.support is defined %}
+    support = {
+{% for uri in cfg.contact_info.support %}
+        "{{ uri }}";
+{% endfor %}
+    }
+{% endif %}
+}
+{% endif %}

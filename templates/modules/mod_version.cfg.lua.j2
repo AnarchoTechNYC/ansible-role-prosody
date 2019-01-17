@@ -1,0 +1,13 @@
+{#
+    Prosody server template fragment for the `version` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_version
+#}
+{% if cfg.hide_os_type is defined %}
+
+hide_os_type = {{ cfg.hide_os_type | bool | lower }}
+{% endif %}
+{% if cfg.os_version_command is defined %}
+
+os_version_command = {{ cfg.os_version_command }}
+{% endif %}

@@ -1,0 +1,17 @@
+{#
+    Prosody server template fragment for the `disco` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_disco
+#}
+{% if cfg.disco_items is defined %}
+
+disco_items = {
+{% for k, v in disco_items.items() %}
+    {"{{ k }}", "{{ v }}"};
+{% endfor %}
+}
+{% endif %}
+{% if cfg.disco_hidden is defined %}
+
+disco_hidden = {{ cfg.disco_hidden | bool | lower }}
+{% endif %}

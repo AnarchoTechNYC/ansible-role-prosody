@@ -1,0 +1,13 @@
+{#
+    Prosody server template fragment for the `tls` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_tls
+#}
+{% if cfg.c2s_require_encryption is defined %}
+
+c2s_require_encryption = {{ cfg.c2s_require_encryption | bool | lower }}
+{% endif %}
+{% if cfg.s2s_require_encryption is defined %}
+
+s2s_require_encryption = {{ cfg.s2s_require_encryption | bool | lower }}
+{% endif %}

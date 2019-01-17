@@ -1,0 +1,25 @@
+{#
+    Prosody server template fragment for the `saslauth` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_saslauth
+#}
+{% if cfg.allow_unencrypted_plain_auth is defined %}
+
+allow_unencrypted_plain_auth = {{ cfg.allow_unencrypted_plain_auth | bool | lower }}
+{% endif %}
+{% if cfg.insecure_sasl_mechanisms is defined %}
+
+insecure_sasl_mechanisms = {
+{% for m in cfg.insecure_sasl_mechanisms %}
+    "{{ m }}";
+{% endfor %}
+}
+{% endif %}
+{% if cfg.disable_sasl_mechanisms is defined %}
+
+disable_sasl_mechanisms = {
+{% for m in cfg.disable_sasl_mechanisms %}
+    "{{ m }}";
+{% endfor %}
+}
+{% endif %}

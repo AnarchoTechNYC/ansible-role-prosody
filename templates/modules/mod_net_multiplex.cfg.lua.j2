@@ -1,0 +1,21 @@
+{#
+    Prosody server template fragment for the `net_multiplex` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_net_multiplex
+#}
+{% if cfg.ports is defined %}
+
+ports = {
+{% for port in cfg.ports %}
+    {{ port | int }};
+{% endfor %}
+}
+{% endif %}
+{% if cfg.ssl_ports is defined %}
+
+ssl_ports = {
+{% for port in cfg.ssl_ports %}
+    {{ port | int }};
+{% endfor %}
+}
+{% endif %}

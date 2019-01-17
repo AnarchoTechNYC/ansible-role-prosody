@@ -1,0 +1,9 @@
+{#
+    Prosody server template fragment for the `dialback` module.
+    For details, see:
+        https://prosody.im/doc/modules/mod_dialback
+#}
+{% if cfg.dialback_without_dialback is defined %}
+
+dialback_without_dialback = {{ cfg.dialback_without_dialback | bool | lower }}
+{% endif %}
