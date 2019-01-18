@@ -13,7 +13,7 @@
     repo: "deb https://packages.prosody.im/debian {{ ansible_distribution_release | default('stretch') }} main"
     state: present
 
-- name: Install Prosody.
+- name: Install Prosody package.
   apt:
     update_cache: true
     name: "{{ packages }}"
@@ -22,23 +22,3 @@
     packages:
       - prosody
       - python-pexpect # For interacting with `prosodyctl`.
-
-- name: Ensure Prosody TLS key is readable.
-  file:
-    path: /etc/prosody/certs/localhost.key
-    owner: "{{ prosody_server_username }}"
-    group: "{{ prosody_server_username }}"
-    mode: "400"
-  notify: Restart Prosody.
-
-# FIXME: Variablize this so not only `localhost.{crt,key}` are used.
-- name: Enable HTTPS TLS certificates.
-  file:
-    src: "{{ item.src }}"
-    dest: "/etc/prosody/certs/{{ item.dest }}"
-    state: link
-  loop:
-    - src: localhost.key
-      dest: https.key
-    - src: localhost.crt
-      dest: https.crt

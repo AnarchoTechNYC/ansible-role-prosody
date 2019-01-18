@@ -3,8 +3,28 @@
   when: prosody_virtualhost_onions is defined
   import_tasks: configure-virtualhost-onions.yml
 
-- name: Install Prosody dependencies.
+- name: Install Prosody.
   include_tasks: "install-{{ ansible_os_family | default('Debian') | lower }}.yml"
+
+- name: Ensure Prosody TLS key is readable.
+  file:
+    path: /etc/prosody/certs/localhost.key
+    owner: "{{ prosody_server_username }}"
+    group: "{{ prosody_server_username }}"
+    mode: "400"
+  notify: Restart Prosody.
+
+# FIXME: Variablize this so not only `localhost.{crt,key}` are used.
+- name: Enable HTTPS TLS certificates.
+  file:
+    src: "{{ item.src }}"
+    dest: "/etc/prosody/certs/{{ item.dest }}"
+    state: link
+  loop:
+    - src: localhost.key
+      dest: https.key
+    - src: localhost.crt
+      dest: https.crt
 
 - name: Ensure Prosody VirtualHost configuration directories exist.
   file:
