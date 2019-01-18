@@ -10,7 +10,7 @@ To configure a Prosody server, several default variables are defined:
 * `prosody_server_data_dir`: Path to the directory in which Prosody will store user information. This defaults to `/var/lib/{{ prosody_server_username }}`, which is also the `prosody` user's default `$HOME` directory.
 * `prosody_server_run_dir`: Path to the server's runtime directory, which stores ephemeral files used while the server is running. This defaults to `/var/run/{{ prosody_server_username }}`.
 * `prosody_plugins_src_base_url`: Base HTTP URL of the Prosody plugins (modules) repository from which to download new modules.
-* `prosody_plugins`: List of community Prosody plugins to install. To have any effect, you must also set the `prosody_config.plugins_path` variable, described below. Each item in this list is a dictionary with the following structure:
+* `prosody_plugins`: List of community Prosody plugins to install. Defaults to the empty list (`[]`). To have any effect, you must also set the `prosody_config.plugins_path` variable, described below. Each item in this list is a dictionary with the following structure:
     * `name`: Name of the plugin to download and install.
     * `state`: Whether the plugin should be installed (`present`, the default), or uninstalled (`absent`).
     * `version`: Branch or commit of the version of the community plugin to download and install.
@@ -31,6 +31,25 @@ Among these convenience variables are:
 * `prosody_modules_enabled`: List of Prosody modules to enable. This can be used as the value of the `modules_enabled` configuration option in either the global section or a given `VirtualHost`.
 * `prosody_modules_disabled`: List of Prosody modules to disable. This can be used as the value of the `modules_disabled` configuration option in either the global section or a given `VirtualHost`. Defaults to an empty list (`[]`).
 * `prosody_http_files_dir`: Path to a directory from which Prosody's various HTTP modules should serve static files, i.e., [the Prosody HTTP server](https://prosody.im/doc/http) document root.
+* `prosody_virtualhosts`: List of Prosody VirtualHosts dictionaries. This is used as the default value of the `prosody_config.VirtualHosts` key and can be used to override (or append to) the Prosody VirtualHosts list by a group- or host-specific inventory. The following example shows how to override the `prosody_config.VirtualHosts` key as well as how to extend (append to) the `prosody_plugins` list from a [group variables](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#group-variables) file.
+    ```yml
+    # In `group_vars/all.yml` file.
+    ---
+    prosody_virtualhosts:
+      - domain: chat.example.com
+
+    # In `group_vars/public_chat_servers.yml` file.
+    ---
+    # Add the `mod_bookmarks` and `mod_default_bookmarks` plugins
+    # for Prosody servers in this group.
+    prosody_plugins: "{{ prosody_plugins + [{name: bookmarks}, {name: default_bookmarks}] }}"
+    # Override the Prosody configuration for VirtualHosts.
+    prosody_virtualhosts:
+      - domain: public-chat.example.com
+        default_bookmarks: # Configure `mod_default_bookmarks` plugin.
+          - jid: "help@conference.example.com"
+    ```
+    The above configuration will result in the `chat.example.com` VirtualHost being configured for all servers *except* those in the `public_chat_servers` Ansible inventory group. The latter group will have all the same Prosody modules installed, as well as the `bookmarks` and `default_bookmarks` community modules. On hosts in the `public_chat_servers` Ansible inventory group, the configured Prosody VirtualHost will be `public-chat.example.com` and will include a `default_bookmarks` configuration.
 
 Refer to the [`defaults/main.yml`](defaults/main.yml) file for a complete accounting of these variables.
 

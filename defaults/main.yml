@@ -8,7 +8,7 @@ prosody_server_run_dir: "/var/run/{{ prosody_server_username }}"
 prosody_plugins_src_base_url: https://hg.prosody.im/prosody-modules/raw-file/
 
 # List of community Prosody plugins to install.
-#prosody_plugins:
+prosody_plugins: [] # Empty by default, structure like this:
 #  - name: conversejs      # Name of the plugin to install.
 #    state: present        # Whether the plugin should be installed or not.
 #    version: 2681f74750b2 # Branch or commit of the version to install.
@@ -36,6 +36,14 @@ prosody_modules_enabled:
   - admin_adhoc
 prosody_modules_disabled: []
 prosody_http_files_dir: "/var/www/prosody"
+prosody_virtualhosts:
+  - domain: localhost
+    #state: present
+    #enabled: true
+    #certificate: /etc/prosody/certs/localhost.crt
+    #key: /etc/prosody/certs/localhost.key
+    # The password should be encrypted with Ansible Vault.
+    #password: "passphrase to decrypt TLS key file"
 
 # List of Tor Onion service names whose onions should be added to the
 # Prosody configuration's VirtualHosts list. This is mainly intended
@@ -120,18 +128,7 @@ prosody_config:
   # Location of directory to find certificates in (relative to main config file)
   certificates: certs
 
-  VirtualHosts:
-    - domain: localhost
-      #admins: []
-      #state: present
-      #enabled: true
-      #modules_enabled: []
-      #modules_disabled: []
-      #authentication: internal_plain
-      #certificate: /etc/prosody/certs/localhost.crt
-      #key: /etc/prosody/certs/localhost.key
-      # The password should be encrypted with Ansible Vault.
-      #password: "passphrase to decrypt TLS key file"
+  VirtualHosts: "{{ prosody_virtualhosts }}"
 
 # List of user accounts registered with the Prosody server.
 prosody_users: []

@@ -1,0 +1,49 @@
+{#
+    Prosody server template fragment for the `tls_policy` module.
+    For details, see:
+        https://modules.prosody.im/mod_tls_policy.html
+#}
+{% if cfg.tls_policy is defined %}
+
+tls_policy = {% if cfg.tls_policy is string %}"{{ cfg.tls_policy }}"{% else %}{
+{% if cfg.tls_policy.c2s is defined %}
+    c2s = {
+{% if cfg.tls_policy.c2s.cipher is defined %}
+        cipher = "{{ cfg.tls_policy.c2s.cipher }}";
+{% endif %}
+{% if cfg.tls_policy.c2s.encryption is defined %}
+        encryption = "{{ cfg.tls_policy.c2s.encryption }}";
+{% endif %}
+{% if cfg.tls_policy.c2s.protocol is defined %}
+        protocol = "{{ cfg.tls_policy.c2s.protocol }}";
+{% endif %}
+{% if cfg.tls_policy.c2s.bits is defined %}
+        bits = {{ cfg.tls_policy.c2s.bits | int }};
+{% endif %}
+{% if cfg.tls_policy.c2s.authentication is defined %}
+        authentication = "{{ cfg.tls_policy.c2s.authentication }}";
+{% endif %}
+    };
+{% endif %}
+{% if cfg.tls_policy.s2s is defined %}
+    s2s = {
+{% if cfg.tls_policy.s2s.cipher is defined %}
+        cipher = "{{ cfg.tls_policy.s2s.cipher }}";
+{% endif %}
+{% if cfg.tls_policy.s2s.encryption is defined %}
+        encryption = "{{ cfg.tls_policy.s2s.encryption }}";
+{% endif %}
+{% if cfg.tls_policy.s2s.protocol is defined %}
+        protocol = "{{ cfg.tls_policy.s2s.protocol }}";
+{% endif %}
+{% if cfg.tls_policy.s2s.bits is defined %}
+        bits = {{ cfg.tls_policy.s2s.bits | int }};
+{% endif %}
+{% if cfg.tls_policy.s2s.authentication is defined %}
+        authentication = "{{ cfg.tls_policy.s2s.authentication }}";
+{% endif %}
+    };
+{% endif %}
+}
+{% endif %}
+{% endif %}
