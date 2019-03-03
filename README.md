@@ -52,6 +52,7 @@ Among these convenience variables are:
           - jid: "help@conference.example.com"
     ```
     The above configuration will result in the `chat.example.com` VirtualHost being configured for all servers *except* those in the `public_chat_servers` Ansible inventory group. The latter group will have all the same Prosody modules installed, as well as the `bookmarks` and `default_bookmarks` community modules. On hosts in the `public_chat_servers` Ansible inventory group, the configured Prosody VirtualHost will be `public-chat.example.com` and will include a `default_bookmarks` configuration.
+* `prosody_components`: List of Prosody Components dictionaries. This is used as the default value of the `prosody_config.Components` key and can be used to override (or append to) the Prosody Components list in a similar fashion as the `prosody_virtualhosts` list can. Defaults to `[]`.
 
 Refer to the [`defaults/main.yml`](defaults/main.yml) file for a complete accounting of these variables.
 

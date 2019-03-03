@@ -59,6 +59,13 @@ prosody_virtualhosts:
     # The password should be encrypted with Ansible Vault.
     #password: "passphrase to decrypt TLS key file"
 
+# List of Prosody Components to configure.
+prosody_components: []
+#  - hostname: conference.example.com
+#    plugin: muc
+#    options:
+#      restrict_room_creation: local
+
 # List of Tor Onion service names whose onions should be added to the
 # Prosody configuration's VirtualHosts list. This is mainly intended
 # to make it possible to use Prosody HTTP modules that need to pass an
@@ -143,6 +150,7 @@ prosody_config:
   certificates: certs
 
   VirtualHosts: "{{ prosody_virtualhosts }}"
+  Components: "{{ prosody_components }}"
 
 # List of user accounts registered with the Prosody server.
 prosody_users: []
