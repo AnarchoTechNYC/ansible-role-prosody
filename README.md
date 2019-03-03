@@ -15,6 +15,7 @@ To configure a Prosody server, several default variables are defined:
     * `state`: Whether the plugin should be installed (`present`, the default), or uninstalled (`absent`).
     * `version`: Branch or commit of the version of the community plugin to download and install.
     * `checksum`: Optional verification digest in `<algorithm>:<digest>` notation to compare the downloaded plugin file against. For example, `sha1:6d84b4f4d5108bce25fa9103157ddfc519362460`. See the `checksum` parameter for Ansible's [`get_url` module](https://docs.ansible.com/ansible/latest/modules/get_url_module.html) for details.
+* `prosody_plugin_paths`: List of additional directories searched for Prosody plugins (modules) to load. Defaults to `["/usr/local/lib/prosody/modules"]`.
 * `prosody_virtualhost_onions`: List of Onion services exposing a Prosody-backed service. Each item in this list is a dictionary with the following structure:
     * `name`: Name of the Tor Onion service whose `hostname` file to read for additional (`.onion`) domains to add as Prosody VirtualHosts.
     * `options`: Dictionary of Prosody configuration options, same as the `prosody_config.VirtualHosts` variable described below, with which to configure the given Prosody VirtualHost Onion service.
@@ -28,6 +29,7 @@ Since the exact structure of the `prosody_config` dictionary is not always predi
 Among these convenience variables are:
 
 * `prosody_admins`: List of bare JabberIDs (e.g., `admin@example.com`) granted administrative privileges. This can be used as the value of the `admins` configuration option in either the global section or a given `VirtualHost`. Defaults to an empty list (`[]`).
+* `prosody_allow_registration`: Boolean indicating whether user registration is enabled by default. Defaults to `false`.
 * `prosody_modules_enabled`: List of Prosody modules to enable. This can be used as the value of the `modules_enabled` configuration option in either the global section or a given `VirtualHost`.
 * `prosody_modules_disabled`: List of Prosody modules to disable. This can be used as the value of the `modules_disabled` configuration option in either the global section or a given `VirtualHost`. Defaults to an empty list (`[]`).
 * `prosody_http_files_dir`: Path to a directory from which Prosody's various HTTP modules should serve static files, i.e., [the Prosody HTTP server](https://prosody.im/doc/http) document root.
@@ -142,7 +144,7 @@ It may be helpful to see a few examples.
       - name: conversejs
         version: tip
     prosody_config:
-      plugins_paths:
+      plugin_paths:
         - /usr/local/lib/prosody/modules
       modules_enabled:
         - saslauth

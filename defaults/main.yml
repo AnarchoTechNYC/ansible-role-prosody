@@ -15,8 +15,17 @@ prosody_plugins: [] # Empty by default, structure like this:
 #    # If set, hash of the downloaded module file to compare against.
 #    checksum: sha1:6d84b4f4d5108bce25fa9103157ddfc519362460
 
-# Convenience variables for setting Prosody configuration options.
+# List of directories where Prosody plugins are searched.
+prosody_plugin_paths:
+  - /usr/local/lib/prosody/modules
+
+# List of JIDs granted administrative privileges to the XMPP server.
 prosody_admins: []
+
+# Whether or not to enable user registration by default.
+prosody_allow_registration: false
+
+# List of Prosody modules enabled by default.
 prosody_modules_enabled:
   - roster
   - saslauth
@@ -34,8 +43,13 @@ prosody_modules_enabled:
   - ping
   - register
   - admin_adhoc
+
+# List of Prosody modules disabled by default.
 prosody_modules_disabled: []
+
 prosody_http_files_dir: "/var/www/prosody"
+
+# List of Prosody VirtualHosts to configure.
 prosody_virtualhosts:
   - domain: localhost
     #state: present
@@ -74,12 +88,12 @@ prosody_config:
   admins: "{{ prosody_admins }}"
 
   #data_path: "{{ prosody_server_data_dir }}"
-  #plugin_paths: []
+  plugin_paths: "{{ prosody_plugin_paths }}"
 
   modules_enabled: "{{ prosody_modules_enabled }}"
   modules_disabled: "{{ prosody_modules_disabled }}"
 
-  allow_registration: false
+  allow_registration: "{{ prosody_allow_registration }}"
 
   # Client-to-server settings.
   c2s_require_encryption: true
