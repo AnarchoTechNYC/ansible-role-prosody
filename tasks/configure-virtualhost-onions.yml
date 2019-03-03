@@ -26,6 +26,7 @@
       {%- for k, v in item.1.options.items() -%}
         {%- if v is string -%}
           {%- if item.1.options.update({k: v | replace('__PROSODY_DOMAIN__', item.0)}) -%}{%- endif -%}
+        {%- elif v is mapping -%}{#- TODO: Handle dictionaries as well? -#}
         {%- elif v is sequence -%}
           {%- for x in v -%}
             {%- if item.1.options[k].__setitem__(loop.index0, x | replace('__PROSODY_DOMAIN__', item.0)) -%}{%- endif -%}
