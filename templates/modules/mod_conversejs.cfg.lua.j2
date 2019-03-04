@@ -7,7 +7,7 @@
 
 conversejs_options = {
 {% for k, v in cfg.conversejs_options.items() %}
-    {{ k }} = "{{ v }}";
+    {{ k }} = {% include "prosody-value.j2" %};
 {% endfor %}
 }
 {% endif %}
