@@ -25,6 +25,23 @@ prosody_admins: []
 # Whether or not to enable user registration by default.
 prosody_allow_registration: false
 
+# Whether to force TLS connections by default.
+prosody_c2s_require_encryption: true
+
+# List of ports to listen on for connections from XMPP clients.
+prosody_c2s_ports:
+  - 5222
+
+# Whether or not to require server-to-server connections to use TLS.
+prosody_s2s_require_encryption: true
+
+# List of ports to listen on for connections from XMPP servers.
+prosody_s2s_ports:
+  - 5269
+
+# Whether to authenticate other servers using only TLS certificates.
+prosody_s2s_secure_auth: true
+
 # List of Prosody modules enabled by default.
 prosody_modules_enabled:
   - roster
@@ -103,20 +120,18 @@ prosody_config:
   allow_registration: "{{ prosody_allow_registration }}"
 
   # Client-to-server settings.
-  c2s_require_encryption: true
-  #c2s_ports:
-  #  - 5222
+  c2s_require_encryption: "{{ prosody_c2s_require_encryption }}"
+  c2s_ports: "{{ prosody_c2s_ports }}"
   #c2s_interfaces:
   #  - "*"
   #  - "::"
 
   # Server-to-server settings.
-  s2s_require_encryption: true
-  s2s_secure_auth: false
+  s2s_require_encryption: "{{ prosody_s2s_require_encryption }}"
+  s2s_secure_auth: "{{ prosody_s2s_secure_auth }}"
   #s2s_insecure_domains: []
   #s2s_secure_domains: []
-  #s2s_ports:
-  #  - 5269
+  s2s_ports: "{{ prosody_s2s_ports }}"
   #s2s_interfaces:
   #  - "*"
   #  - "::"

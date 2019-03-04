@@ -30,6 +30,11 @@ Among these convenience variables are:
 
 * `prosody_admins`: List of bare JabberIDs (e.g., `admin@example.com`) granted administrative privileges. This can be used as the value of the `admins` configuration option in either the global section or a given `VirtualHost`. Defaults to an empty list (`[]`).
 * `prosody_allow_registration`: Boolean indicating whether user registration is enabled by default. Defaults to `false`.
+* `prosody_c2s_require_encryption`: Boolean indicating whether the server should enforce encrypted (`STARTTLS`) connections. Defaults to `true`.
+* `prosody_c2s_ports`: List of ports to listen on for connections from XMPP clients. Defaults to `[5222]`.
+* `prosody_s2s_require_encryption`: Boolean indicating whether the server should enforce encrypted (`STARTTLS`) connections with other XMPP servers. Defaults to `true`.
+* `prosody_s2s_ports`: List of ports to listen on for connections from other XMPP servers. Defaults to `[5269]`.
+* `prosody_s2s_secure_auth`: Boolean indicating whether or to restrict authentication of other XMPP servers to their presented TLS certificates. Defaults to `true`.
 * `prosody_modules_enabled`: List of Prosody modules to enable. This can be used as the value of the `modules_enabled` configuration option in either the global section or a given `VirtualHost`.
 * `prosody_modules_disabled`: List of Prosody modules to disable. This can be used as the value of the `modules_disabled` configuration option in either the global section or a given `VirtualHost`. Defaults to an empty list (`[]`).
 * `prosody_http_files_dir`: Path to a directory from which Prosody's various HTTP modules should serve static files, i.e., [the Prosody HTTP server](https://prosody.im/doc/http) document root.
