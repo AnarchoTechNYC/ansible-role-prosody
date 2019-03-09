@@ -1,0 +1,25 @@
+{#
+    Prosody server template fragment for the `http_upload` module.
+    For details, see:
+        https://modules.prosody.im/mod_http_upload.html
+#}
+{% if cfg.http_max_content_size is defined %}
+
+http_max_content_size = {{ cfg.http_max_content_size | int }}
+{% endif %}
+{% if cfg.http_upload_file_size is defined %}
+
+http_upload_file_size = {{ cfg.http_upload_file_size | int }}
+{% endif %}
+{% if cfg.http_upload_expire_after is defined %}
+
+http_upload_expire_after = {{ cfg.http_upload_expire_after | int }}
+{% endif %}
+{% if cfg.http_upload_quota is defined %}
+
+http_upload_quota = {{ cfg.http_upload_quota | int }}
+{% endif %}
+{% if cfg.http_upload_path is defined %}
+
+http_upload_path = "{{ cfg.http_upload_path }}"
+{% endif %}
