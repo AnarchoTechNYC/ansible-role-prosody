@@ -39,13 +39,13 @@ Among these convenience variables are:
 * `prosody_modules_disabled`: List of Prosody modules to disable. This can be used as the value of the `modules_disabled` configuration option in either the global section or a given `VirtualHost`. Defaults to an empty list (`[]`).
 * `prosody_http_files_dir`: Path to a directory from which Prosody's various HTTP modules should serve static files, i.e., [the Prosody HTTP server](https://prosody.im/doc/http) document root.
 * `prosody_virtualhosts`: List of Prosody VirtualHosts dictionaries. This is used as the default value of the `prosody_config.VirtualHosts` key and can be used to override (or append to) the Prosody VirtualHosts list by a group- or host-specific inventory. The following example shows how to override the `prosody_config.VirtualHosts` key as well as how to extend (append to) the `prosody_plugins` list from a [group variables](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#group-variables) file.
-    ```yml
-    # In `group_vars/all.yml` file.
+    ```yaml
+    # In `group_vars/all.yaml` file.
     ---
     prosody_virtualhosts:
       - domain: chat.example.com
 
-    # In `group_vars/public_chat_servers.yml` file.
+    # In `group_vars/public_chat_servers.yaml` file.
     ---
     # Add the `mod_bookmarks` and `mod_default_bookmarks` plugins
     # for Prosody servers in this group.
@@ -59,12 +59,12 @@ Among these convenience variables are:
     The above configuration will result in the `chat.example.com` VirtualHost being configured for all servers *except* those in the `public_chat_servers` Ansible inventory group. The latter group will have all the same Prosody modules installed, as well as the `bookmarks` and `default_bookmarks` community modules. On hosts in the `public_chat_servers` Ansible inventory group, the configured Prosody VirtualHost will be `public-chat.example.com` and will include a `default_bookmarks` configuration.
 * `prosody_components`: List of Prosody Components dictionaries. This is used as the default value of the `prosody_config.Components` key and can be used to override (or append to) the Prosody Components list in a similar fashion as the `prosody_virtualhosts` list can. Defaults to `[]`.
 
-Refer to the [`defaults/main.yml`](defaults/main.yml) file for a complete accounting of these variables.
+Refer to the [`defaults/main.yaml`](defaults/main.yaml) file for a complete accounting of these variables.
 
 It may be helpful to see a few examples.
 
 1. Default Prosody installation:
-    ```yml
+    ```yaml
     prosody_config:
       admins: []
       modules_enabled:
@@ -98,7 +98,7 @@ It may be helpful to see a few examples.
     ```
     This is equivalent to the Prosody 0.10 configuration file that ships with the project. If the above settings are what you desire, you need not include a `prosody_config` dictionary at all.
 1. Prosody server responsible for two domains (`localhost` and `open-registration.local`), the latter of which allows in-band XMPP account registration while the former does not:
-    ```yml
+    ```yaml
     admins:
       - admin@localhost
     allow_registration: false
@@ -108,7 +108,7 @@ It may be helpful to see a few examples.
         allow_registration: true
     ```
 1. Prosody server with [SQL-backed data store](https://prosody.im/doc/modules/mod_storage_sql) on PostgreSQL:
-    ```yml
+    ```yaml
     storage: sql
     sql:
       driver: PostgreSQL
@@ -119,7 +119,7 @@ It may be helpful to see a few examples.
       password: your_password
     ```
 1. Prosody server with [certain user data pieces split across multiple storage backends](https://prosody.im/doc/storage):
-    ```yml
+    ```yaml
     default_storage: internal
     storage:
       accounts: sql
@@ -134,7 +134,7 @@ It may be helpful to see a few examples.
     ```
     The above will store user accounts and passwords, as well as user contact lists (rosters) in the MySQL database on the localhost, but other data, such as user's own profile information (vCards), will use the default `internal` (filesystem-based) storage backend.
 1. Simple [multi-user chat (MUC)](https://prosody.im/doc/chatrooms) server with a few non-default options configured:
-    ```yml
+    ```yaml
     Components:
       - hostname: conference.example.com
         plugin: muc
@@ -144,7 +144,7 @@ It may be helpful to see a few examples.
           restrict_room_creation: local
     ```
 1. Simple MUC-enabled server using the [ConverseJS Web-based chat front-end](https://conversejs.org/) served via both HTTP and HTTPS on their alternate ports (`8080` and `8443`), using the server root as the ConverseJS endpoint, with in-band user registration enabled:
-    ```yml
+    ```yaml
     prosody_plugins_src_base_url: https://hg.prosody.im/prosody-modules/raw-file/
     prosody_plugins:
       - name: conversejs

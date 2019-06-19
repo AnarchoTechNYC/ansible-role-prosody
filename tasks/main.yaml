@@ -1,10 +1,10 @@
 ---
 - name: Configure Prosody VirtualHosts from Onion services.
   when: prosody_virtualhost_onions is defined
-  import_tasks: configure-virtualhost-onions.yml
+  import_tasks: configure-virtualhost-onions.yaml
 
 - name: Install Prosody.
-  include_tasks: "install-{{ ansible_os_family | default('Debian') | lower }}.yml"
+  include_tasks: "install-{{ ansible_os_family | default('Debian') | lower }}.yaml"
 
 - name: Ensure Prosody TLS key is readable.
   file:
@@ -155,7 +155,7 @@
   notify: Restart Prosody.
 
 - name: Set Prosody user accounts.
-  include_tasks: users.yml
+  include_tasks: users.yaml
   no_log: true
   loop: "{{ prosody_users }}"
   vars:
